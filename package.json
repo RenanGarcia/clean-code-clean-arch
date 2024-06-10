@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "main": "ts-node src/index.ts",
+    "start": "ts-node -r tsconfig-paths/register src/index.ts",
     "test": "jest",
     "prepare": "husky"
   },
@@ -26,6 +26,7 @@
     "husky": "^9.0.11",
     "lint-staged": "^15.2.5",
     "prettier": "^3.3.1",
+    "tsconfig-paths": "^4.2.0",
     "typescript-eslint": "^7.12.0"
   }
 }
