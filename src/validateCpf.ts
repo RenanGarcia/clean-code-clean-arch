@@ -1,57 +1,39 @@
-export function validateCpf(str: string) {
-  if (str !== null) {
-    if (str !== undefined) {
-      if (str.length >= 11 && str.length <= 14) {
-        // cleaning cpf
-        str = str
-          .replace(".", "")
-          .replace(".", "")
-          .replace("-", "")
-          .replace(" ", "")
-        // tudo igual
-        if (!str.split("").every((c) => c === str[0])) {
-          try {
-            let d1, d2
-            let dg1, dg2, rest
-            let digito
-            let nDigResult
-            d1 = d2 = 0
-            dg1 = dg2 = rest = 0
+const MAX_LENGTH = 11
+const FACTOR_FIRST_DIGIT = 10
+const FACTOR_SECOND_DIGIT = 11
 
-            for (let nCount = 1; nCount < str.length - 1; nCount++) {
-              // if (isNaN(parseInt(str.substring(nCount -1, nCount)))) {
-              // 	return false;
-              // } else {
+export function validateCpf(cpf: string) {
+  if (!cpf) return false
+  const cleanedCpf = cleanCharacters(cpf)
+  if (!isValidLength(cleanedCpf)) return false
+  if (isAllDigitsEquals(cleanedCpf)) return false
+  const digit1 = calculateDigit(cleanedCpf, FACTOR_FIRST_DIGIT)
+  const digit2 = calculateDigit(cleanedCpf, FACTOR_SECOND_DIGIT)
+  return extractDigit(cleanedCpf) == `${digit1}${digit2}`
+}
 
-              digito = parseInt(str.substring(nCount - 1, nCount))
-              d1 = d1 + (11 - nCount) * digito
+function cleanCharacters(cpf: string) {
+  return cpf.replace(/\D/g, "")
+}
 
-              d2 = d2 + (12 - nCount) * digito
-              // }
-            }
+function isValidLength(cpf: string) {
+  return cpf.length === MAX_LENGTH
+}
 
-            rest = d1 % 11
+function isAllDigitsEquals(cpf: string) {
+  const [firstDigit] = cpf
+  return cpf.split("").every((digit) => digit === firstDigit)
+}
 
-            // se for menor que 2 é 0, senão é 11 menos o resto
-            dg1 = rest < 2 ? (dg1 = 0) : 11 - rest
-            d2 += 2 * dg1
-            rest = d2 % 11
-            if (rest < 2) dg2 = 0
-            else dg2 = 11 - rest
+function calculateDigit(cpf: string, factor: number) {
+  let total = 0
+  for (const digit of cpf) {
+    if (factor > 1) total += parseInt(digit, 10) * factor--
+  }
+  const remainder = total % 11
+  return remainder < 2 ? 0 : 11 - remainder
+}
 
-            let nDigVerific = str.substring(str.length - 2, str.length)
-            nDigResult = "" + dg1 + "" + dg2
-
-            return nDigVerific == nDigResult
-
-            // se der problema...
-          } catch (e) {
-            console.error("Erro !" + e)
-
-            return false
-          }
-        } else return false
-      } else return false
-    } else return false
-  } else return false
+function extractDigit(cpf: string) {
+  return cpf.slice(-2)
 }
