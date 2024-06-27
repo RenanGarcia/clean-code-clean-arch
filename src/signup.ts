@@ -80,10 +80,18 @@ export async function signup(input: any): Promise<any> {
 
 export async function getAccount(accountId: any): Promise<any> {
   const connection = pgp()("postgres://postgres:123456@localhost:5432/app")
-  const [account] = await connection.query(
+  const [acc] = await connection.query(
     "select * from cccat17.account where account_id = $1",
     [accountId],
   )
   await connection.$pool.end()
-  return account
+  return {
+    accountId: acc.account_id,
+    name: acc.name,
+    email: acc.email,
+    cpf: acc.cpf,
+    isPassenger: acc.is_passenger,
+    isDriver: acc.is_driver,
+    carPlate: acc.car_plate,
+  }
 }

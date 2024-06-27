@@ -40,6 +40,19 @@ test("Deve criar uma conta para o motorista", async () => {
   expect(account.isDriver).toBe(input.isDriver)
 })
 
+test("Não deve criar uma conta duplicada", async () => {
+  const input = {
+    name: "Renan Garcia",
+    email: `test${Math.random()}@test.com.br`,
+    cpf: "264.500.550-06",
+    isPassenger: true,
+  }
+
+  await signup(input)
+  const output = await signup(input)
+  expect(output).toBe(-4)
+})
+
 test("Não deve criar uma conta com o nome inválido", async () => {
   const input = {
     name: "",
@@ -62,6 +75,18 @@ test("Não deve criar uma conta com o email inválido", async () => {
 
   const output = await signup(input)
   expect(output).toBe(-2)
+})
+
+test("Não deve criar uma conta com o cpf inválido", async () => {
+  const input = {
+    name: "Renan Garcia",
+    email: `test${Math.random()}@test.com.br`,
+    cpf: "264.500.5",
+    isPassenger: true,
+  }
+
+  const output = await signup(input)
+  expect(output).toBe(-1)
 })
 
 test("Não deve criar uma conta com a placa inválida", async () => {
