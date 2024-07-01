@@ -59,7 +59,7 @@ test("Não deve criar uma conta com o nome inválido", async () => {
     isPassenger: true,
   }
 
-  await expect(signup(input)).rejects.toThrow(new Error("Ivalid name"))
+  await expect(signup(input)).rejects.toThrow(new Error("Invalid name"))
 })
 
 test("Não deve criar uma conta com o email inválido", async () => {
@@ -69,7 +69,7 @@ test("Não deve criar uma conta com o email inválido", async () => {
     cpf: "264.500.550-06",
     isPassenger: true,
   }
-  await expect(signup(input)).rejects.toThrow(new Error("Ivalid email"))
+  await expect(signup(input)).rejects.toThrow(new Error("Invalid email"))
 })
 
 test("Não deve criar uma conta com o cpf inválido", async () => {
@@ -79,7 +79,7 @@ test("Não deve criar uma conta com o cpf inválido", async () => {
     cpf: "264.500.5",
     isPassenger: true,
   }
-  await expect(signup(input)).rejects.toThrow(new Error("Ivalid CPF"))
+  await expect(signup(input)).rejects.toThrow(new Error("Invalid CPF"))
 })
 
 test("Não deve criar uma conta com a placa inválida", async () => {
@@ -90,5 +90,5 @@ test("Não deve criar uma conta com a placa inválida", async () => {
     carPlate: "",
     isDriver: true,
   }
-  await expect(signup(input)).rejects.toThrow(new Error("Ivalid car plate"))
+  await expect(signup(input)).rejects.toThrow(new Error("Invalid car plate"))
 })
