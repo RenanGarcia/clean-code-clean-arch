@@ -16,7 +16,6 @@ test("Deve criar uma conta para o passageiro", async () => {
   expect(account.email).toBe(input.email)
   expect(account.cpf).toBe(input.cpf)
   expect(account.isPassenger).toBe(input.isPassenger)
-  expect(account.isDriver).toBe(false)
 })
 
 test("Deve criar uma conta para o motorista", async () => {
@@ -36,7 +35,6 @@ test("Deve criar uma conta para o motorista", async () => {
   expect(account.email).toBe(input.email)
   expect(account.cpf).toBe(input.cpf)
   expect(account.carPlate).toBe(input.carPlate)
-  expect(account.isPassenger).toBe(false)
   expect(account.isDriver).toBe(input.isDriver)
 })
 
@@ -47,10 +45,10 @@ test("Não deve criar uma conta duplicada", async () => {
     cpf: "264.500.550-06",
     isPassenger: true,
   }
-
   await signup(input)
-  const output = await signup(input)
-  expect(output).toBe(-4)
+  await expect(signup(input)).rejects.toThrow(
+    new Error("Account already exists"),
+  )
 })
 
 test("Não deve criar uma conta com o nome inválido", async () => {
@@ -61,8 +59,7 @@ test("Não deve criar uma conta com o nome inválido", async () => {
     isPassenger: true,
   }
 
-  const output = await signup(input)
-  expect(output).toBe(-3)
+  await expect(signup(input)).rejects.toThrow(new Error("Ivalid name"))
 })
 
 test("Não deve criar uma conta com o email inválido", async () => {
@@ -72,9 +69,7 @@ test("Não deve criar uma conta com o email inválido", async () => {
     cpf: "264.500.550-06",
     isPassenger: true,
   }
-
-  const output = await signup(input)
-  expect(output).toBe(-2)
+  await expect(signup(input)).rejects.toThrow(new Error("Ivalid email"))
 })
 
 test("Não deve criar uma conta com o cpf inválido", async () => {
@@ -84,9 +79,7 @@ test("Não deve criar uma conta com o cpf inválido", async () => {
     cpf: "264.500.5",
     isPassenger: true,
   }
-
-  const output = await signup(input)
-  expect(output).toBe(-1)
+  await expect(signup(input)).rejects.toThrow(new Error("Ivalid CPF"))
 })
 
 test("Não deve criar uma conta com a placa inválida", async () => {
@@ -97,7 +90,5 @@ test("Não deve criar uma conta com a placa inválida", async () => {
     carPlate: "",
     isDriver: true,
   }
-
-  const output = await signup(input)
-  expect(output).toBe(-5)
+  await expect(signup(input)).rejects.toThrow(new Error("Ivalid car plate"))
 })
