@@ -1,5 +1,5 @@
 import express from "express"
-import { getAccount, signup } from "./signup"
+import { getAccount, signup } from "./application"
 
 const app = express()
 app.use(express.json())

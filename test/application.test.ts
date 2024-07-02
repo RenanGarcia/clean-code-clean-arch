@@ -1,4 +1,4 @@
-import { getAccount, signup } from "~/signup"
+import { getAccount, signup } from "~/application"
 
 test("Deve criar uma conta para o passageiro", async () => {
   const input = {
