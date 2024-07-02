@@ -2,7 +2,11 @@ import crypto from "crypto"
 import { validateCpf } from "./validateCpf"
 import AccountDAO from "./resource"
 
-export default class AccountService {
+export default interface AccountService {
+  signup(input: any): Promise<any>
+  getAccount(accountId: any): Promise<any>
+}
+export class AccountServiceProduction implements AccountService {
   accountDAO: AccountDAO
 
   constructor(accountDAO: AccountDAO) {

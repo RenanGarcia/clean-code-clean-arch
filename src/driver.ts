@@ -1,29 +1,39 @@
 import express from "express"
 import AccountService from "./application"
-import { AccountDAODatabase } from "./resource"
 
-const app = express()
-app.use(express.json())
+export default class API {
+  app: any
+  accountService: AccountService
 
-const accountDAO = new AccountDAODatabase()
-const accountService = new AccountService(accountDAO)
-
-app.post("/signup", async function (req, res) {
-  try {
-    const createdAccount = await accountService.signup(req.body)
-    return res.json(createdAccount)
-  } catch (err) {
-    return res.status(422).json({ message: err.message })
+  constructor(accountService: AccountService) {
+    this.app = express()
+    this.app.use(express.json())
+    this.accountService = accountService
   }
-})
 
-app.get("/accounts/:accountId", async function (req, res) {
-  try {
-    const account = await accountService.getAccount(req.params.accountId)
-    return res.json(account)
-  } catch (err) {
-    return res.status(500).json({ message: err.message })
+  build() {
+    this.app.post("/signup", async (req, res) => {
+      try {
+        const createdAccount = await this.accountService.signup(req.body)
+        return res.json(createdAccount)
+      } catch (err) {
+        return res.status(422).json({ message: err.message })
+      }
+    })
+
+    this.app.get("/accounts/:accountId", async (req, res) => {
+      try {
+        const account = await this.accountService.getAccount(
+          req.params.accountId,
+        )
+        return res.json(account)
+      } catch (err) {
+        return res.status(500).json({ message: err.message })
+      }
+    })
   }
-})
 
-app.listen(3000)
+  start() {
+    this.app.listen(3000)
+  }
+}

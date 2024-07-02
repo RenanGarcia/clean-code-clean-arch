@@ -1,11 +1,11 @@
-import AccountService from "~/application"
+import AccountService, { AccountServiceProduction } from "~/application"
 import { AccountDAOMemory } from "~/resource"
 
 let accountService: AccountService
 
 beforeAll(() => {
   const accountDAO = new AccountDAOMemory()
-  accountService = new AccountService(accountDAO)
+  accountService = new AccountServiceProduction(accountDAO)
 })
 
 test("Deve criar uma conta para o passageiro", async () => {
