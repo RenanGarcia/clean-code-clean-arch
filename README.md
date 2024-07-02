@@ -14,8 +14,6 @@ cd clean-code-clean-arch
 yarn
 # Levanta o banco de dados
 docker-compose up -d
-# Cria as tabelas
-psql -d app -f create.sql
 # Rode a api
 yarn start:dev
 # Rode os testes e seja feliz
