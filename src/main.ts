@@ -1,9 +1,12 @@
 import API from "./driver"
-import { AccountServiceProduction } from "./application"
 import { AccountDAODatabase } from "./resource"
+import Signup from "./Signup"
+import GetAccount from "./GetAccount"
 
 const accountDAO = new AccountDAODatabase()
-const accountService = new AccountServiceProduction(accountDAO)
-const api = new API(accountService)
+const signup = new Signup(accountDAO)
+const getAccount = new GetAccount(accountDAO)
+const api = new API(signup, getAccount)
+
 api.build()
 api.start()

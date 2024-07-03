@@ -1,20 +1,22 @@
 import express from "express"
-import AccountService from "./application"
+import Signup from "./Signup"
+import GetAccount from "./GetAccount"
 
 export default class API {
   app: any
-  accountService: AccountService
 
-  constructor(accountService: AccountService) {
+  constructor(
+    readonly signup: Signup,
+    readonly getAccount: GetAccount,
+  ) {
     this.app = express()
     this.app.use(express.json())
-    this.accountService = accountService
   }
 
   build() {
     this.app.post("/signup", async (req, res) => {
       try {
-        const createdAccount = await this.accountService.signup(req.body)
+        const createdAccount = await this.signup.execute(req.body)
         return res.json(createdAccount)
       } catch (err) {
         return res.status(422).json({ message: err.message })
@@ -23,9 +25,7 @@ export default class API {
 
     this.app.get("/accounts/:accountId", async (req, res) => {
       try {
-        const account = await this.accountService.getAccount(
-          req.params.accountId,
-        )
+        const account = await this.getAccount.execute(req.params.accountId)
         return res.json(account)
       } catch (err) {
         return res.status(500).json({ message: err.message })

@@ -1,19 +1,16 @@
 import crypto from "crypto"
 import { validateCpf } from "./validateCpf"
 import AccountDAO from "./resource"
+import UseCase from "./UseCase"
 
-export default interface AccountService {
-  signup(input: any): Promise<any>
-  getAccount(accountId: any): Promise<any>
-}
-export class AccountServiceProduction implements AccountService {
+export default class Signup implements UseCase {
   accountDAO: AccountDAO
 
   constructor(accountDAO: AccountDAO) {
     this.accountDAO = accountDAO
   }
 
-  async signup(input: any): Promise<any> {
+  async execute(input: any): Promise<any> {
     const account = {
       account_id: crypto.randomUUID(),
       name: input.name,
@@ -34,18 +31,5 @@ export class AccountServiceProduction implements AccountService {
       throw new Error("Invalid car plate")
     await this.accountDAO.saveAccount(account)
     return { accountId: account.account_id }
-  }
-
-  async getAccount(accountId: any): Promise<any> {
-    const account = await this.accountDAO.getAccountById(accountId)
-    return {
-      accountId: account.account_id,
-      name: account.name,
-      email: account.email,
-      cpf: account.cpf,
-      isPassenger: account.is_passenger,
-      isDriver: account.is_driver,
-      carPlate: account.car_plate,
-    }
   }
 }
