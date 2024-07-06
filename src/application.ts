@@ -1,6 +1,7 @@
 import crypto from "crypto"
 import { validateCpf } from "./validateCpf"
 import AccountDAO from "./resource"
+import MailerGateway from "./MailerGateway"
 
 export default interface AccountService {
   signup(input: any): Promise<any>
@@ -8,9 +9,11 @@ export default interface AccountService {
 }
 export class AccountServiceProduction implements AccountService {
   accountDAO: AccountDAO
+  mailerGateway: MailerGateway
 
   constructor(accountDAO: AccountDAO) {
     this.accountDAO = accountDAO
+    this.mailerGateway = new MailerGateway()
   }
 
   async signup(input: any): Promise<any> {
@@ -33,6 +36,7 @@ export class AccountServiceProduction implements AccountService {
     if (input.isDriver && !input.carPlate.match(/[A-Z]{3}[0-9]{4}/))
       throw new Error("Invalid car plate")
     await this.accountDAO.saveAccount(account)
+    await this.mailerGateway.send(account.email, "Bem-vindo!", "")
     return { accountId: account.account_id }
   }
 
