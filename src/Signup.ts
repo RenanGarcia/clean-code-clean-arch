@@ -2,12 +2,15 @@ import crypto from "crypto"
 import { validateCpf } from "./validateCpf"
 import AccountDAO from "./resource"
 import UseCase from "./UseCase"
+import MailerGateway from "./MailerGateway"
 
 export default class Signup implements UseCase {
   accountDAO: AccountDAO
+  mailerGateway: MailerGateway
 
   constructor(accountDAO: AccountDAO) {
     this.accountDAO = accountDAO
+    this.mailerGateway = new MailerGateway()
   }
 
   async execute(input: any): Promise<any> {
@@ -30,6 +33,7 @@ export default class Signup implements UseCase {
     if (input.isDriver && !input.carPlate.match(/[A-Z]{3}[0-9]{4}/))
       throw new Error("Invalid car plate")
     await this.accountDAO.saveAccount(account)
+    await this.mailerGateway.send(account.email, "Bem-vindo!", "")
     return { accountId: account.account_id }
   }
 }
