@@ -15,7 +15,7 @@ test.each([
   "123456",
   "1234567891011121314",
   "11111111111",
-])("Deve testar se o cpf é inválido: %s", (cpf: string) => {
+])("Deve testar se o cpf é inválido: %s", (cpf: any) => {
   const isValid = validateCpf(cpf)
   expect(isValid).toBe(false)
 })

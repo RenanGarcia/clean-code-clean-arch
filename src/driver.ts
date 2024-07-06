@@ -12,22 +12,22 @@ export default class API {
   }
 
   build() {
-    this.app.post("/signup", async (req, res) => {
+    this.app.post("/signup", async (req: any, res: any) => {
       try {
         const createdAccount = await this.accountService.signup(req.body)
         return res.json(createdAccount)
-      } catch (err) {
+      } catch (err: any) {
         return res.status(422).json({ message: err.message })
       }
     })
 
-    this.app.get("/accounts/:accountId", async (req, res) => {
+    this.app.get("/accounts/:accountId", async (req: any, res: any) => {
       try {
         const account = await this.accountService.getAccount(
           req.params.accountId,
         )
         return res.json(account)
-      } catch (err) {
+      } catch (err: any) {
         return res.status(500).json({ message: err.message })
       }
     })
