@@ -1,7 +1,7 @@
 import { AccountRepositoryDatabase } from "./AccountRepository"
 import Signup from "./Signup"
 import GetAccount from "./GetAccount"
-import API from "./driver"
+import API from "./API"
 
 const accountRepository = new AccountRepositoryDatabase()
 const signup = new Signup(accountRepository)
