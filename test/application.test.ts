@@ -1,13 +1,17 @@
 import Sinon from "sinon"
-import AccountService, { AccountServiceProduction } from "~/application"
 import MailerGateway from "~/MailerGateway"
-import { AccountDAOMemory } from "~/resource"
+import { AccountRepositoryMemory } from "~/AccountRepository"
+import GetAccount from "~/GetAccount"
+import Signup from "~/Signup"
+import Account from "~/Account"
 
-let accountService: AccountService
+let signup: Signup
+let getAccount: GetAccount
 
 beforeAll(() => {
-  const accountDAO = new AccountDAOMemory()
-  accountService = new AccountServiceProduction(accountDAO)
+  const accountRepository = new AccountRepositoryMemory()
+  signup = new Signup(accountRepository)
+  getAccount = new GetAccount(accountRepository)
 })
 
 test("Deve criar uma conta para o passageiro", async () => {
@@ -17,10 +21,10 @@ test("Deve criar uma conta para o passageiro", async () => {
     cpf: "264.500.550-06",
     isPassenger: true,
   }
-  const output = await accountService.signup(input)
+  const output = await signup.execute(input)
   expect(output.accountId).toBeDefined()
 
-  const account = await accountService.getAccount(output.accountId)
+  const account = await getAccount.execute(output.accountId)
   expect(account.accountId).toBe(output.accountId)
   expect(account.name).toBe(input.name)
   expect(account.email).toBe(input.email)
@@ -36,10 +40,10 @@ test("Deve criar uma conta para o motorista", async () => {
     carPlate: "MVD2030",
     isDriver: true,
   }
-  const output = await accountService.signup(input)
+  const output = await signup.execute(input)
   expect(output.accountId).toBeDefined()
 
-  const account = await accountService.getAccount(output.accountId)
+  const account = await getAccount.execute(output.accountId)
   expect(account.accountId).toBe(output.accountId)
   expect(account.name).toBe(input.name)
   expect(account.email).toBe(input.email)
@@ -52,39 +56,41 @@ test("Deve criar uma conta para o motorista", async () => {
  * O Stub sobreescreve a implementação do método e fornece um retorno
  *
  */
-test("Deve criar uma conta para o motorista (stub AccountDAO)", async () => {
+test("Deve criar uma conta para o motorista (stub accountRepository)", async () => {
   const input = {
     name: "João Garcia",
     email: `test${Math.random()}@test.com.br`,
     cpf: "385.672.430-33",
     carPlate: "MVD2030",
+    isPassenger: false,
     isDriver: true,
   }
-  const AccountDAOOutput = {
-    name: input.name,
-    email: input.email,
-    cpf: input.cpf,
-    car_plate: input.carPlate,
-    is_driver: input.isDriver,
-  }
+  const expectedAccount = Account.create(
+    input.name,
+    input.email,
+    input.cpf,
+    input.carPlate,
+    input.isPassenger,
+    input.isDriver,
+  )
 
   const stubByEmail = Sinon.stub(
-    AccountDAOMemory.prototype,
+    AccountRepositoryMemory.prototype,
     "getAccountByEmail",
   ).resolves(undefined)
   const stubSaveAccount = Sinon.stub(
-    AccountDAOMemory.prototype,
+    AccountRepositoryMemory.prototype,
     "saveAccount",
   ).resolves()
   const stubGetAccountById = Sinon.stub(
-    AccountDAOMemory.prototype,
+    AccountRepositoryMemory.prototype,
     "getAccountById",
-  ).resolves(AccountDAOOutput)
+  ).resolves(expectedAccount)
   const stubSendMail = Sinon.stub(MailerGateway.prototype, "send")
 
-  const output = await accountService.signup(input)
+  const output = await signup.execute(input)
   expect(output.accountId).toBeDefined()
-  const account = await accountService.getAccount(output.accountId)
+  const account = await getAccount.execute(output.accountId)
   expect(account.name).toBe(input.name)
   expect(account.email).toBe(input.email)
   expect(account.cpf).toBe(input.cpf)
@@ -111,7 +117,7 @@ test("Deve enviar email ao criar a conta (spy MailerGateway)", async () => {
   }
 
   const spySendMailer = Sinon.spy(MailerGateway.prototype, "send")
-  await accountService.signup(input)
+  await signup.execute(input)
 
   expect(spySendMailer.calledOnce).toBe(true)
   expect(spySendMailer.calledWith(input.email, "Bem-vindo!", "")).toBe(true)
@@ -140,7 +146,7 @@ test("Deve enviar email ao criar a conta (mock MailerGateway)", async () => {
       // console.log("Sobreescrevendo o método com uma função")
     })
 
-  await accountService.signup(input)
+  await signup.execute(input)
   mockSendMail.verify()
   mockSendMail.restore()
 })
@@ -152,8 +158,8 @@ test("Não deve criar uma conta duplicada", async () => {
     cpf: "264.500.550-06",
     isPassenger: true,
   }
-  await accountService.signup(input)
-  await expect(accountService.signup(input)).rejects.toThrow(
+  await signup.execute(input)
+  await expect(signup.execute(input)).rejects.toThrow(
     new Error("Account already exists"),
   )
 })
@@ -166,9 +172,7 @@ test("Não deve criar uma conta com o nome inválido", async () => {
     isPassenger: true,
   }
 
-  await expect(accountService.signup(input)).rejects.toThrow(
-    new Error("Invalid name"),
-  )
+  await expect(signup.execute(input)).rejects.toThrow(new Error("Invalid name"))
 })
 
 test("Não deve criar uma conta com o email inválido", async () => {
@@ -178,7 +182,7 @@ test("Não deve criar uma conta com o email inválido", async () => {
     cpf: "264.500.550-06",
     isPassenger: true,
   }
-  await expect(accountService.signup(input)).rejects.toThrow(
+  await expect(signup.execute(input)).rejects.toThrow(
     new Error("Invalid email"),
   )
 })
@@ -190,9 +194,7 @@ test("Não deve criar uma conta com o cpf inválido", async () => {
     cpf: "264.500.5",
     isPassenger: true,
   }
-  await expect(accountService.signup(input)).rejects.toThrow(
-    new Error("Invalid CPF"),
-  )
+  await expect(signup.execute(input)).rejects.toThrow(new Error("Invalid CPF"))
 })
 
 test("Não deve criar uma conta com a placa inválida", async () => {
@@ -203,7 +205,7 @@ test("Não deve criar uma conta com a placa inválida", async () => {
     carPlate: "",
     isDriver: true,
   }
-  await expect(accountService.signup(input)).rejects.toThrow(
+  await expect(signup.execute(input)).rejects.toThrow(
     new Error("Invalid car plate"),
   )
 })
