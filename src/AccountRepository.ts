@@ -1,5 +1,5 @@
-import pgp from "pg-promise"
 import Account from "./Account"
+import DatabaseConnection from "./DatabaseConnection"
 
 export default interface AccountRepository {
   getAccountByEmail(email: string): Promise<Account | undefined>
@@ -8,13 +8,13 @@ export default interface AccountRepository {
 }
 
 export class AccountRepositoryDatabase implements AccountRepository {
+  constructor(readonly connection: DatabaseConnection) {}
+
   async getAccountByEmail(email: string) {
-    const connection = pgp()("postgres://postgres:123456@localhost:5432/app")
-    const [accountData] = await connection.query(
+    const [accountData] = await this.connection.query(
       "select * from cccat17.account where email = $1",
       [email],
     )
-    await connection.$pool.end()
     if (!accountData) return
     return new Account(
       accountData.account_id,
@@ -28,12 +28,10 @@ export class AccountRepositoryDatabase implements AccountRepository {
   }
 
   async getAccountById(accountId: string) {
-    const connection = pgp()("postgres://postgres:123456@localhost:5432/app")
-    const [accountData] = await connection.query(
+    const [accountData] = await this.connection.query(
       "select * from cccat17.account where account_id = $1",
       [accountId],
     )
-    await connection.$pool.end()
     if (!accountData) throw new Error("Account not found")
     return new Account(
       accountData.account_id,
@@ -47,8 +45,7 @@ export class AccountRepositoryDatabase implements AccountRepository {
   }
 
   async saveAccount(account: Account) {
-    const connection = pgp()("postgres://postgres:123456@localhost:5432/app")
-    await connection.query(
+    await this.connection.query(
       "insert into cccat17.account (account_id, name, email, cpf, car_plate, is_passenger, is_driver) values ($1, $2, $3, $4, $5, $6, $7)",
       [
         account.accountId,
@@ -60,7 +57,6 @@ export class AccountRepositoryDatabase implements AccountRepository {
         account.isDriver,
       ],
     )
-    await connection.$pool.end()
   }
 }
 
