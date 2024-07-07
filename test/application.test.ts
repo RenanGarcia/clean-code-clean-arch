@@ -1,16 +1,17 @@
 import Sinon from "sinon"
 import MailerGateway from "~/MailerGateway"
-import { AccountDAOMemory } from "~/resource"
+import { AccountRepositoryMemory } from "~/AccountRepository"
 import GetAccount from "~/GetAccount"
 import Signup from "~/Signup"
+import Account from "~/Account"
 
 let signup: Signup
 let getAccount: GetAccount
 
 beforeAll(() => {
-  const accountDAO = new AccountDAOMemory()
-  signup = new Signup(accountDAO)
-  getAccount = new GetAccount(accountDAO)
+  const accountRepository = new AccountRepositoryMemory()
+  signup = new Signup(accountRepository)
+  getAccount = new GetAccount(accountRepository)
 })
 
 test("Deve criar uma conta para o passageiro", async () => {
@@ -55,34 +56,36 @@ test("Deve criar uma conta para o motorista", async () => {
  * O Stub sobreescreve a implementação do método e fornece um retorno
  *
  */
-test("Deve criar uma conta para o motorista (stub AccountDAO)", async () => {
+test("Deve criar uma conta para o motorista (stub accountRepository)", async () => {
   const input = {
     name: "João Garcia",
     email: `test${Math.random()}@test.com.br`,
     cpf: "385.672.430-33",
     carPlate: "MVD2030",
+    isPassenger: false,
     isDriver: true,
   }
-  const AccountDAOOutput = {
-    name: input.name,
-    email: input.email,
-    cpf: input.cpf,
-    car_plate: input.carPlate,
-    is_driver: input.isDriver,
-  }
+  const expectedAccount = Account.create(
+    input.name,
+    input.email,
+    input.cpf,
+    input.carPlate,
+    input.isPassenger,
+    input.isDriver,
+  )
 
   const stubByEmail = Sinon.stub(
-    AccountDAOMemory.prototype,
+    AccountRepositoryMemory.prototype,
     "getAccountByEmail",
   ).resolves(undefined)
   const stubSaveAccount = Sinon.stub(
-    AccountDAOMemory.prototype,
+    AccountRepositoryMemory.prototype,
     "saveAccount",
   ).resolves()
   const stubGetAccountById = Sinon.stub(
-    AccountDAOMemory.prototype,
+    AccountRepositoryMemory.prototype,
     "getAccountById",
-  ).resolves(AccountDAOOutput)
+  ).resolves(expectedAccount)
   const stubSendMail = Sinon.stub(MailerGateway.prototype, "send")
 
   const output = await signup.execute(input)
