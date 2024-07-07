@@ -1,39 +1,27 @@
-import express from "express"
 import Signup from "./Signup"
 import GetAccount from "./GetAccount"
+import HttpServer from "./HttpServer"
 
-export default class API {
-  app: any
-
+export default class AccountController {
   constructor(
+    readonly httpServer: HttpServer,
     readonly signup: Signup,
     readonly getAccount: GetAccount,
   ) {
-    this.app = express()
-    this.app.use(express.json())
-  }
+    this.httpServer.register(
+      "post",
+      "/signup",
+      async (params: any, body: any) => {
+        return await this.signup.execute(body)
+      },
+    )
 
-  build() {
-    this.app.post("/signup", async (req: any, res: any) => {
-      try {
-        const createdAccount = await this.signup.execute(req.body)
-        return res.json(createdAccount)
-      } catch (err: any) {
-        return res.status(422).json({ message: err.message })
-      }
-    })
-
-    this.app.get("/accounts/:accountId", async (req: any, res: any) => {
-      try {
-        const account = await this.getAccount.execute(req.params.accountId)
-        return res.json(account)
-      } catch (err: any) {
-        return res.status(500).json({ message: err.message })
-      }
-    })
-  }
-
-  start() {
-    this.app.listen(3000)
+    this.httpServer.register(
+      "get",
+      "/accounts/:{accountId}",
+      async (params: any, body: any) => {
+        return await this.getAccount.execute(params.accountId)
+      },
+    )
   }
 }

@@ -38,5 +38,6 @@ test("Não deve criar uma conta com cpf inválido", async function () {
 
   const responseSignup = await axios.post(`${BASE_URL}/signup`, inputSignup)
   const outputSignup = responseSignup.data
+  expect(responseSignup.status).toBe(422)
   expect(outputSignup.message).toBe("Invalid CPF")
 })
