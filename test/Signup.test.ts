@@ -52,6 +52,17 @@ test("Deve criar uma conta para o motorista", async () => {
   expect(account.isDriver).toBe(input.isDriver)
 })
 
+test("Não deve criar uma conta sem definição do tipo", async () => {
+  const input = {
+    name: "João Garcia",
+    email: `test${Math.random()}@test.com.br`,
+    cpf: "385.672.430-33",
+  }
+  await expect(signup.execute(input)).rejects.toThrow(
+    new Error("Account type is not defined"),
+  )
+})
+
 /**
  * O Stub sobreescreve a implementação do método e fornece um retorno
  *

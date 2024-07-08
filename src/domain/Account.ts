@@ -13,6 +13,8 @@ export default class Account {
     readonly isPassenger: boolean,
     readonly isDriver: boolean,
   ) {
+    if ((!isPassenger && !isDriver) || (isPassenger && isDriver))
+      throw new Error("Account type is not defined")
     if (!name.match(/[a-zA-Z] [a-zA-Z]+/)) throw new Error("Invalid name")
     if (!email.match(/^(.+)@(.+)$/)) throw new Error("Invalid email")
     if (isDriver && !carPlate.match(/[A-Z]{3}[0-9]{4}/))
