@@ -1,7 +1,7 @@
-import AccountRepository from "./AccountRepository"
-import UseCase from "./UseCase"
-import MailerGateway from "./MailerGateway"
-import Account from "./Account"
+import Account from "~/domain/Account"
+import UseCase from "~/application/UseCase"
+import MailerGateway from "~/infra/MailerGateway"
+import AccountRepository from "~/infra/AccountRepository"
 
 export default class Signup implements UseCase {
   accountRepository: AccountRepository

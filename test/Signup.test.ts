@@ -1,9 +1,9 @@
 import Sinon from "sinon"
-import MailerGateway from "~/MailerGateway"
-import { AccountRepositoryMemory } from "~/AccountRepository"
-import GetAccount from "~/GetAccount"
-import Signup from "~/Signup"
-import Account from "~/Account"
+import Account from "~/domain/Account"
+import Signup from "~/application/Signup"
+import GetAccount from "~/application/GetAccount"
+import MailerGateway from "~/infra/MailerGateway"
+import { AccountRepositoryMemory } from "~/infra/AccountRepository"
 
 let signup: Signup
 let getAccount: GetAccount

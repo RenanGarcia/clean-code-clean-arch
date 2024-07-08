@@ -1,5 +1,5 @@
-import AccountRepository from "./AccountRepository"
-import UseCase from "./UseCase"
+import UseCase from "~/application/UseCase"
+import AccountRepository from "~/infra/AccountRepository"
 
 type Output = {
   accountId: string

@@ -1,6 +1,6 @@
-import Signup from "./Signup"
-import GetAccount from "./GetAccount"
-import HttpServer from "./HttpServer"
+import Signup from "~/application/Signup"
+import GetAccount from "~/application/GetAccount"
+import HttpServer from "~/infra/HttpServer"
 
 export default class AccountController {
   constructor(

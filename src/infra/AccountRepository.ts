@@ -1,5 +1,5 @@
-import Account from "./Account"
-import DatabaseConnection from "./DatabaseConnection"
+import Account from "~/domain/Account"
+import DatabaseConnection from "~/infra/DatabaseConnection"
 
 export default interface AccountRepository {
   getAccountByEmail(email: string): Promise<Account | undefined>
