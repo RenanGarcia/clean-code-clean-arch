@@ -80,9 +80,9 @@ test("Deve criar uma conta para o motorista (stub accountRepository)", async () 
     input.name,
     input.email,
     input.cpf,
-    input.carPlate,
     input.isPassenger,
     input.isDriver,
+    input.carPlate,
   )
 
   const stubByEmail = Sinon.stub(

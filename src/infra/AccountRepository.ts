@@ -21,9 +21,9 @@ export class AccountRepositoryDatabase implements AccountRepository {
       accountData.name,
       accountData.email,
       accountData.cpf,
-      accountData.car_plate,
       accountData.is_passenger,
       accountData.is_driver,
+      accountData.car_plate,
     )
   }
 
@@ -38,23 +38,23 @@ export class AccountRepositoryDatabase implements AccountRepository {
       accountData.name,
       accountData.email,
       accountData.cpf,
-      accountData.car_plate,
       accountData.is_passenger,
       accountData.is_driver,
+      accountData.car_plate,
     )
   }
 
   async saveAccount(account: Account) {
     await this.connection.query(
-      "insert into cccat17.account (account_id, name, email, cpf, car_plate, is_passenger, is_driver) values ($1, $2, $3, $4, $5, $6, $7)",
+      "insert into cccat17.account (account_id, name, email, cpf, is_passenger, is_driver, car_plate) values ($1, $2, $3, $4, $5, $6, $7)",
       [
         account.accountId,
         account.name,
         account.email,
         account.getCpf(),
-        account.carPlate,
         account.isPassenger,
         account.isDriver,
+        account.carPlate,
       ],
     )
   }

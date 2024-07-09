@@ -9,15 +9,15 @@ export default class Account {
     readonly name: string,
     readonly email: string,
     cpf: string,
-    readonly carPlate: string,
     readonly isPassenger: boolean,
     readonly isDriver: boolean,
+    readonly carPlate?: string,
   ) {
     if ((!isPassenger && !isDriver) || (isPassenger && isDriver))
       throw new Error("Account type is not defined")
     if (!name.match(/[a-zA-Z] [a-zA-Z]+/)) throw new Error("Invalid name")
     if (!email.match(/^(.+)@(.+)$/)) throw new Error("Invalid email")
-    if (isDriver && !carPlate.match(/[A-Z]{3}[0-9]{4}/))
+    if (isDriver && !carPlate?.match(/[A-Z]{3}[0-9]{4}/))
       throw new Error("Invalid car plate")
     this.cpf = new Cpf(cpf)
   }
@@ -27,18 +27,18 @@ export default class Account {
     name: string,
     email: string,
     cpf: string,
-    carPlate: string,
-    isPassenger: boolean,
-    isDriver: boolean,
+    isPassenger?: boolean,
+    isDriver?: boolean,
+    carPlate?: string,
   ) {
     return new Account(
       crypto.randomUUID(),
       name,
       email,
       cpf,
-      carPlate,
       !!isPassenger,
       !!isDriver,
+      carPlate,
     )
   }
 

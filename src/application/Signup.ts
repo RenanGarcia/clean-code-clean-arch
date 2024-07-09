@@ -12,7 +12,7 @@ export default class Signup implements UseCase {
     this.mailerGateway = new MailerGateway()
   }
 
-  async execute(input: any): Promise<any> {
+  async execute(input: Input): Promise<Output> {
     const existingAccount = await this.accountRepository.getAccountByEmail(
       input.email,
     )
@@ -21,12 +21,24 @@ export default class Signup implements UseCase {
       input.name,
       input.email,
       input.cpf,
-      input.carPlate,
       input.isPassenger,
       input.isDriver,
+      input.carPlate,
     )
     await this.accountRepository.saveAccount(account)
     await this.mailerGateway.send(account.email, "Bem-vindo!", "")
     return { accountId: account.accountId }
   }
+}
+
+type Input = {
+  name: string
+  email: string
+  cpf: string
+  isPassenger?: boolean
+  isDriver?: boolean
+  carPlate?: string
+}
+type Output = {
+  accountId: string
 }
