@@ -16,7 +16,7 @@ export default class RequestRide implements UseCase {
     if (!account.isPassenger) {
       throw new Error("Account is not from a passenger")
     }
-    const existingRide = await this.rideRepository.getRideByPassengerId(
+    const existingRide = await this.rideRepository.getActiveRideByPassengerId(
       input.passengerId,
     )
     if (existingRide) {

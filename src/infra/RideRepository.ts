@@ -1,9 +1,71 @@
 import Ride from "~/domain/Ride"
+import DatabaseConnection from "~/infra/DatabaseConnection"
 
 export default interface RideRepository {
-  getRideByPassengerId(passengerId: string): Promise<Ride | undefined>
+  getActiveRideByPassengerId(passengerId: string): Promise<Ride | undefined>
   getRideById(rideId: string): Promise<Ride>
   saveRide(ride: Ride): Promise<void>
+}
+
+const UNFINISHED_RIDE_STATUS = "'requested', 'accepted', 'in_progress'"
+
+export class RideRepositoryDatabase implements RideRepository {
+  constructor(readonly connection: DatabaseConnection) {}
+
+  async getActiveRideByPassengerId(passengerId: string) {
+    const [rideData] = await this.connection.query(
+      `select * from cccat17.ride where passenger_id = $1 and status in (${UNFINISHED_RIDE_STATUS})`,
+      [passengerId],
+    )
+    if (!rideData) return
+    return new Ride(
+      rideData.ride_id,
+      rideData.passenger_id,
+      rideData.status,
+      parseFloat(rideData.from_lat),
+      parseFloat(rideData.from_long),
+      parseFloat(rideData.to_lat),
+      parseFloat(rideData.to_long),
+      rideData.date,
+    )
+  }
+
+  async getRideById(rideId: string) {
+    const [rideData] = await this.connection.query(
+      "select * from cccat17.ride where ride_id = $1",
+      [rideId],
+    )
+    if (!rideData) throw new Error("Ride not found")
+    return new Ride(
+      rideData.ride_id,
+      rideData.passenger_id,
+      rideData.status,
+      parseFloat(rideData.from_lat),
+      parseFloat(rideData.from_long),
+      parseFloat(rideData.to_lat),
+      parseFloat(rideData.to_long),
+      rideData.date,
+    )
+  }
+
+  async saveRide(ride: Ride) {
+    await this.connection.query(
+      "insert into cccat17.ride (ride_id, passenger_id, driver_id, status, fare, distance, from_lat, from_long, to_lat, to_long, date) values ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)",
+      [
+        ride.rideId,
+        ride.passengerId,
+        null, // ride.driverId,
+        ride.status,
+        null, // ride.fare,
+        null, // ride.distance,
+        ride.fromLat,
+        ride.fromLong,
+        ride.toLat,
+        ride.toLong,
+        ride.date,
+      ],
+    )
+  }
 }
 
 export class RideRepositoryMemory implements RideRepository {
@@ -13,8 +75,13 @@ export class RideRepositoryMemory implements RideRepository {
     this.rides = []
   }
 
-  async getRideByPassengerId(passengerId: string) {
-    return this.rides.find((ride) => ride.passengerId === passengerId)
+  async getActiveRideByPassengerId(passengerId: string) {
+    return this.rides.find((ride) => {
+      return (
+        ride.passengerId === passengerId &&
+        UNFINISHED_RIDE_STATUS.match(ride.status)
+      )
+    })
   }
 
   async getRideById(rideId: string) {
