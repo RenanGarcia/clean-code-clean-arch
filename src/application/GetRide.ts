@@ -7,8 +7,9 @@ export default class GetRide implements UseCase {
     readonly accountRepository: AccountRepository,
     readonly rideRepository: RideRepository,
   ) {}
-  async execute(input: Input): Promise<Output> {
-    const ride = await this.rideRepository.getRideById(input.rideId)
+
+  async execute(rideId: string): Promise<Output> {
+    const ride = await this.rideRepository.getRideById(rideId)
     const passenger = await this.accountRepository.getAccountById(
       ride.passengerId,
     )
@@ -27,10 +28,7 @@ export default class GetRide implements UseCase {
   }
 }
 
-type Input = {
-  rideId: string
-}
-type Output = {
+export type Output = {
   rideId: string
   passengerId: string
   passengerName: string

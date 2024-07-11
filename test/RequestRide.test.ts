@@ -34,7 +34,7 @@ test("Deve solicitar uma corrida", async () => {
   }
   const requestRideOutput = await requestRide.execute(requestRideInput)
   expect(requestRideOutput.rideId).toBeDefined()
-  const getRideOutput = await getRide.execute(requestRideOutput)
+  const getRideOutput = await getRide.execute(requestRideOutput.rideId)
   expect(getRideOutput.status).toBe("requested")
   expect(getRideOutput.passengerName).toBe(userInput.name)
   expect(getRideOutput.passengerEmail).toBe(userInput.email)
