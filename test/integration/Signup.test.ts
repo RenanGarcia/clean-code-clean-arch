@@ -1,9 +1,9 @@
 import Sinon from "sinon"
 import Account from "~/domain/Account"
-import Signup from "~/application/Signup"
-import GetAccount from "~/application/GetAccount"
-import MailerGateway from "~/infra/MailerGateway"
-import { AccountRepositoryMemory } from "~/infra/AccountRepository"
+import Signup from "~/application/usecase/Signup"
+import GetAccount from "~/application/usecase/GetAccount"
+import MailerGatewayFake from "~/infra/gateway/MailerGatewayFake"
+import { AccountRepositoryMemory } from "~/infra/repository/AccountRepository"
 
 let signup: Signup
 let getAccount: GetAccount
@@ -97,7 +97,7 @@ test("Deve criar uma conta para o motorista (stub accountRepository)", async () 
     AccountRepositoryMemory.prototype,
     "getAccountById",
   ).resolves(expectedAccount)
-  const stubSendMail = Sinon.stub(MailerGateway.prototype, "send")
+  const stubSendMail = Sinon.stub(MailerGatewayFake.prototype, "send")
 
   const output = await signup.execute(input)
   expect(output.accountId).toBeDefined()
@@ -127,7 +127,7 @@ test("Deve enviar email ao criar a conta (spy MailerGateway)", async () => {
     isDriver: true,
   }
 
-  const spySendMailer = Sinon.spy(MailerGateway.prototype, "send")
+  const spySendMailer = Sinon.spy(MailerGatewayFake.prototype, "send")
   await signup.execute(input)
 
   expect(spySendMailer.calledOnce).toBe(true)
@@ -148,7 +148,7 @@ test("Deve enviar email ao criar a conta (mock MailerGateway)", async () => {
     isDriver: true,
   }
 
-  const mockSendMail = Sinon.mock(MailerGateway.prototype)
+  const mockSendMail = Sinon.mock(MailerGatewayFake.prototype)
   mockSendMail
     .expects("send")
     .once()

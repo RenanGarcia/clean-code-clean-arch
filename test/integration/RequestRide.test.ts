@@ -1,8 +1,8 @@
-import Signup from "~/application/Signup"
-import GetRide from "~/application/GetRide"
-import RequestRide from "~/application/RequestRide"
-import { AccountRepositoryMemory } from "~/infra/AccountRepository"
-import { RideRepositoryMemory } from "~/infra/RideRepository"
+import Signup from "~/application/usecase/Signup"
+import GetRide from "~/application/usecase/GetRide"
+import RequestRide from "~/application/usecase/RequestRide"
+import { AccountRepositoryMemory } from "~/infra/repository/AccountRepository"
+import { RideRepositoryMemory } from "~/infra/repository/RideRepository"
 
 let signup: Signup
 let requestRide: RequestRide

@@ -1,15 +1,19 @@
 import Account from "~/domain/Account"
-import UseCase from "~/application/UseCase"
-import MailerGateway from "~/infra/MailerGateway"
-import AccountRepository from "~/infra/AccountRepository"
+import UseCase from "~/application/usecase/UseCase"
+import AccountRepository from "~/application/repository/AccountRepository"
+import MailerGateway from "~/application/gateway/MailerGateway"
+import MailerGatewayFake from "~/infra/gateway/MailerGatewayFake"
 
 export default class Signup implements UseCase {
   accountRepository: AccountRepository
   mailerGateway: MailerGateway
 
-  constructor(accountRepository: AccountRepository) {
+  constructor(
+    accountRepository: AccountRepository,
+    mailerGateway: MailerGateway = new MailerGatewayFake(),
+  ) {
     this.accountRepository = accountRepository
-    this.mailerGateway = new MailerGateway()
+    this.mailerGateway = mailerGateway
   }
 
   async execute(input: Input): Promise<Output> {

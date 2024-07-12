@@ -1,7 +1,7 @@
 import Ride from "~/domain/Ride"
-import UseCase from "~/application/UseCase"
-import AccountRepository from "~/infra/AccountRepository"
-import RideRepository from "~/infra/RideRepository"
+import UseCase from "~/application/usecase/UseCase"
+import AccountRepository from "~/application/repository/AccountRepository"
+import RideRepository from "~/application/repository/RideRepository"
 
 export default class RequestRide implements UseCase {
   constructor(

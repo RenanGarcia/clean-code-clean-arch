@@ -1,6 +1,6 @@
-import RequestRide from "~/application/RequestRide"
-import GetRide from "~/application/GetRide"
-import HttpServer from "~/infra/HttpServer"
+import RequestRide from "~/application/usecase/RequestRide"
+import GetRide from "~/application/usecase/GetRide"
+import HttpServer from "~/infra/http/HttpServer"
 
 export default class RideController {
   constructor(

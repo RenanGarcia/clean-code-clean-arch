@@ -1,11 +1,6 @@
 import Ride from "~/domain/Ride"
-import DatabaseConnection from "~/infra/DatabaseConnection"
-
-export default interface RideRepository {
-  getActiveRideByPassengerId(passengerId: string): Promise<Ride | undefined>
-  getRideById(rideId: string): Promise<Ride>
-  saveRide(ride: Ride): Promise<void>
-}
+import RideRepository from "~/application/repository/RideRepository"
+import DatabaseConnection from "~/infra/database/DatabaseConnection"
 
 const UNFINISHED_RIDE_STATUS = "'requested', 'accepted', 'in_progress'"
 
