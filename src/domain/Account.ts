@@ -1,25 +1,34 @@
 import crypto from "crypto"
-import Cpf from "./Cpf"
+
+import Cpf from "~/domain/Cpf"
+import Name from "~/domain/Name"
+import Email from "~/domain/Email"
+import CarPlate from "~/domain/CarPlate"
 
 export default class Account {
+  private name: Name
   private cpf: Cpf
+  private email: Email
+  private carPlate: CarPlate
 
   constructor(
     readonly accountId: string,
-    readonly name: string,
-    readonly email: string,
+    name: string,
+    email: string,
     cpf: string,
     readonly isPassenger: boolean,
     readonly isDriver: boolean,
-    readonly carPlate?: string,
+    carPlate?: string,
   ) {
     if ((!isPassenger && !isDriver) || (isPassenger && isDriver))
       throw new Error("Account type is not defined")
-    if (!name.match(/[a-zA-Z] [a-zA-Z]+/)) throw new Error("Invalid name")
-    if (!email.match(/^(.+)@(.+)$/)) throw new Error("Invalid email")
-    if (isDriver && !carPlate?.match(/[A-Z]{3}[0-9]{4}/))
-      throw new Error("Invalid car plate")
+    this.name = new Name(name)
     this.cpf = new Cpf(cpf)
+    this.email = new Email(email)
+    this.carPlate = new CarPlate(carPlate)
+    if (isDriver && !this.carPlate.isValid()) {
+      throw new Error("Driver must have a valid car plate")
+    }
   }
 
   // Pattern: Static Fabric Method
@@ -42,7 +51,19 @@ export default class Account {
     )
   }
 
+  getName() {
+    return this.name.getValue()
+  }
+
   getCpf() {
     return this.cpf.getValue()
+  }
+
+  getEmail() {
+    return this.email.getValue()
+  }
+
+  getCarPlate() {
+    return this.carPlate.getValue()
   }
 }

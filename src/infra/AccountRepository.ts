@@ -49,12 +49,12 @@ export class AccountRepositoryDatabase implements AccountRepository {
       "insert into cccat17.account (account_id, name, email, cpf, is_passenger, is_driver, car_plate) values ($1, $2, $3, $4, $5, $6, $7)",
       [
         account.accountId,
-        account.name,
-        account.email,
+        account.getName(),
+        account.getEmail(),
         account.getCpf(),
         account.isPassenger,
         account.isDriver,
-        account.carPlate,
+        account.getCarPlate(),
       ],
     )
   }
@@ -68,7 +68,7 @@ export class AccountRepositoryMemory implements AccountRepository {
   }
 
   async getAccountByEmail(email: string) {
-    return this.accounts.find((a) => a.email === email)
+    return this.accounts.find((a) => a.getEmail() === email)
   }
 
   async getAccountById(accountId: string) {

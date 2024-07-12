@@ -12,12 +12,12 @@ export default class GetAccount implements UseCase {
     const account = await this.accountRepository.getAccountById(accountId)
     return {
       accountId: account.accountId,
-      name: account.name,
-      email: account.email,
+      name: account.getName(),
+      email: account.getEmail(),
       cpf: account.getCpf(),
       isPassenger: account.isPassenger,
       isDriver: account.isDriver,
-      carPlate: account.carPlate,
+      carPlate: account.getCarPlate(),
     }
   }
 }

@@ -217,6 +217,6 @@ test("Não deve criar uma conta com a placa inválida", async () => {
     isDriver: true,
   }
   await expect(signup.execute(input)).rejects.toThrow(
-    new Error("Invalid car plate"),
+    new Error("Driver must have a valid car plate"),
   )
 })

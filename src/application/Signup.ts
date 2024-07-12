@@ -26,7 +26,7 @@ export default class Signup implements UseCase {
       input.carPlate,
     )
     await this.accountRepository.saveAccount(account)
-    await this.mailerGateway.send(account.email, "Bem-vindo!", "")
+    await this.mailerGateway.send(account.getEmail(), "Bem-vindo!", "")
     return { accountId: account.accountId }
   }
 }
