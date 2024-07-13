@@ -1,19 +1,29 @@
 import Signup from "~/application/usecase/Signup"
 import GetRide from "~/application/usecase/GetRide"
 import RequestRide from "~/application/usecase/RequestRide"
+import DatabaseConnection from "~/infra/database/DatabaseConnection"
+import PgPromiseAdapter from "~/infra/database/PgPromiseAdapter"
+import AccountRepositoryDatabase from "~/infra/repository/AccountRepositoryDatabase"
+import RideRepositoryDatabase from "~/infra/repository/RideRepositoryDatabase"
 import AccountRepositoryFake from "~/infra/repository/AccountRepositoryFake"
 import RideRepositoryFake from "~/infra/repository/RideRepositoryFake"
 
 let signup: Signup
 let requestRide: RequestRide
 let getRide: GetRide
+let connection: DatabaseConnection
 
 beforeEach(() => {
-  const accountRepository = new AccountRepositoryFake()
-  const rideRepository = new RideRepositoryFake()
+  connection = new PgPromiseAdapter()
+  const accountRepository = new AccountRepositoryDatabase(connection)
+  const rideRepository = new RideRepositoryDatabase(connection)
   signup = new Signup(accountRepository)
   requestRide = new RequestRide(accountRepository, rideRepository)
   getRide = new GetRide(accountRepository, rideRepository)
+})
+
+afterEach(() => {
+  connection.close()
 })
 
 test("Deve solicitar uma corrida", async () => {
@@ -25,6 +35,35 @@ test("Deve solicitar uma corrida", async () => {
   }
   const singupOutput = await signup.execute(userInput)
 
+  const requestRideInput = {
+    passengerId: singupOutput.accountId,
+    fromLat: -27.584905257808835,
+    fromLong: -48.545022195325124,
+    toLat: -27.496887588317275,
+    toLong: -48.522234807851476,
+  }
+  const requestRideOutput = await requestRide.execute(requestRideInput)
+  expect(requestRideOutput.rideId).toBeDefined()
+  const getRideOutput = await getRide.execute(requestRideOutput.rideId)
+  expect(getRideOutput.status).toBe("requested")
+  expect(getRideOutput.passengerName).toBe(userInput.name)
+  expect(getRideOutput.passengerEmail).toBe(userInput.email)
+})
+
+test("Deve solicitar uma corrida (fake repositories)", async () => {
+  const userInput = {
+    name: "Renan Garcia",
+    email: `test${Math.random()}@test.com.br`,
+    cpf: "264.500.550-06",
+    isPassenger: true,
+  }
+  const accountRepository = new AccountRepositoryFake()
+  const rideRepository = new RideRepositoryFake()
+  const signup = new Signup(accountRepository)
+  const requestRide = new RequestRide(accountRepository, rideRepository)
+  const getRide = new GetRide(accountRepository, rideRepository)
+
+  const singupOutput = await signup.execute(userInput)
   const requestRideInput = {
     passengerId: singupOutput.accountId,
     fromLat: -27.584905257808835,

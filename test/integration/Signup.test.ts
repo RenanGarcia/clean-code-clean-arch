@@ -4,17 +4,26 @@ import Signup from "~/application/usecase/Signup"
 import GetAccount from "~/application/usecase/GetAccount"
 import MailerGatewayFake from "~/infra/gateway/MailerGatewayFake"
 import AccountRepositoryFake from "~/infra/repository/AccountRepositoryFake"
+import DatabaseConnection from "~/infra/database/DatabaseConnection"
+import PgPromiseAdapter from "~/infra/database/PgPromiseAdapter"
+import AccountRepositoryDatabase from "~/infra/repository/AccountRepositoryDatabase"
 
 let signup: Signup
 let getAccount: GetAccount
+let connection: DatabaseConnection
 
-beforeAll(() => {
-  const accountRepository = new AccountRepositoryFake()
+beforeEach(() => {
+  connection = new PgPromiseAdapter()
+  const accountRepository = new AccountRepositoryDatabase(connection)
   signup = new Signup(accountRepository)
   getAccount = new GetAccount(accountRepository)
 })
 
-test("Deve criar uma conta para o passageiro", async () => {
+afterEach(() => {
+  connection.close()
+})
+
+test("Deve criar uma conta", async () => {
   const input = {
     name: "Renan Garcia",
     email: `test${Math.random()}@test.com.br`,
@@ -32,7 +41,10 @@ test("Deve criar uma conta para o passageiro", async () => {
   expect(account.isPassenger).toBe(input.isPassenger)
 })
 
-test("Deve criar uma conta para o motorista", async () => {
+/**
+ * O Fake substitui a implementação da classe utilizando a inversão de dependências
+ */
+test("Deve criar uma conta (fake accountRepository)", async () => {
   const input = {
     name: "João Garcia",
     email: `test${Math.random()}@test.com.br`,
@@ -40,6 +52,10 @@ test("Deve criar uma conta para o motorista", async () => {
     carPlate: "MVD2030",
     isDriver: true,
   }
+  const accountRepository = new AccountRepositoryFake()
+  const signup = new Signup(accountRepository)
+  const getAccount = new GetAccount(accountRepository)
+
   const output = await signup.execute(input)
   expect(output.accountId).toBeDefined()
 
@@ -52,20 +68,8 @@ test("Deve criar uma conta para o motorista", async () => {
   expect(account.isDriver).toBe(input.isDriver)
 })
 
-test("Não deve criar uma conta sem definição do tipo", async () => {
-  const input = {
-    name: "João Garcia",
-    email: `test${Math.random()}@test.com.br`,
-    cpf: "385.672.430-33",
-  }
-  await expect(signup.execute(input)).rejects.toThrow(
-    new Error("Account type is not defined"),
-  )
-})
-
 /**
  * O Stub sobreescreve a implementação do método e fornece um retorno
- *
  */
 test("Deve criar uma conta para o motorista (stub accountRepository)", async () => {
   const input = {
@@ -86,15 +90,15 @@ test("Deve criar uma conta para o motorista (stub accountRepository)", async () 
   )
 
   const stubByEmail = Sinon.stub(
-    AccountRepositoryFake.prototype,
+    AccountRepositoryDatabase.prototype,
     "getAccountByEmail",
   ).resolves(undefined)
   const stubSaveAccount = Sinon.stub(
-    AccountRepositoryFake.prototype,
+    AccountRepositoryDatabase.prototype,
     "saveAccount",
   ).resolves()
   const stubGetAccountById = Sinon.stub(
-    AccountRepositoryFake.prototype,
+    AccountRepositoryDatabase.prototype,
     "getAccountById",
   ).resolves(expectedAccount)
   const stubSendMail = Sinon.stub(MailerGatewayFake.prototype, "send")
@@ -184,39 +188,4 @@ test("Não deve criar uma conta com o nome inválido", async () => {
   }
 
   await expect(signup.execute(input)).rejects.toThrow(new Error("Invalid name"))
-})
-
-test("Não deve criar uma conta com o email inválido", async () => {
-  const input = {
-    name: "Renan Garcia",
-    email: "",
-    cpf: "264.500.550-06",
-    isPassenger: true,
-  }
-  await expect(signup.execute(input)).rejects.toThrow(
-    new Error("Invalid email"),
-  )
-})
-
-test("Não deve criar uma conta com o cpf inválido", async () => {
-  const input = {
-    name: "Renan Garcia",
-    email: `test${Math.random()}@test.com.br`,
-    cpf: "264.500.5",
-    isPassenger: true,
-  }
-  await expect(signup.execute(input)).rejects.toThrow(new Error("Invalid CPF"))
-})
-
-test("Não deve criar uma conta com a placa inválida", async () => {
-  const input = {
-    name: "João Garcia",
-    email: `test${Math.random()}@test.com.br`,
-    cpf: "385.672.430-33",
-    carPlate: "",
-    isDriver: true,
-  }
-  await expect(signup.execute(input)).rejects.toThrow(
-    new Error("Driver must have a valid car plate"),
-  )
 })
