@@ -1,16 +1,16 @@
 import Signup from "~/application/usecase/Signup"
 import GetRide from "~/application/usecase/GetRide"
 import RequestRide from "~/application/usecase/RequestRide"
-import { AccountRepositoryMemory } from "~/infra/repository/AccountRepository"
-import { RideRepositoryMemory } from "~/infra/repository/RideRepository"
+import AccountRepositoryFake from "~/infra/repository/AccountRepositoryFake"
+import RideRepositoryFake from "~/infra/repository/RideRepositoryFake"
 
 let signup: Signup
 let requestRide: RequestRide
 let getRide: GetRide
 
 beforeEach(() => {
-  const accountRepository = new AccountRepositoryMemory()
-  const rideRepository = new RideRepositoryMemory()
+  const accountRepository = new AccountRepositoryFake()
+  const rideRepository = new RideRepositoryFake()
   signup = new Signup(accountRepository)
   requestRide = new RequestRide(accountRepository, rideRepository)
   getRide = new GetRide(accountRepository, rideRepository)

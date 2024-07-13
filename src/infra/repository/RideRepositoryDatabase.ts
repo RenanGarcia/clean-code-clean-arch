@@ -1,15 +1,18 @@
 import Ride from "~/domain/Ride"
 import RideRepository from "~/application/repository/RideRepository"
 import DatabaseConnection from "~/infra/database/DatabaseConnection"
+import { UNFINISHED_RIDE_STATUS } from "~/constants"
 
-const UNFINISHED_RIDE_STATUS = "'requested', 'accepted', 'in_progress'"
-
-export class RideRepositoryDatabase implements RideRepository {
+export default class RideRepositoryDatabase implements RideRepository {
   constructor(readonly connection: DatabaseConnection) {}
 
   async getActiveRideByPassengerId(passengerId: string) {
+    const unfinishedStatus = UNFINISHED_RIDE_STATUS.reduce(
+      (acc, status, index) => `${acc}${index > 0 ? ", " : ""}'${status}'`,
+      "",
+    )
     const [rideData] = await this.connection.query(
-      `select * from cccat17.ride where passenger_id = $1 and status in (${UNFINISHED_RIDE_STATUS})`,
+      `select * from cccat17.ride where passenger_id = $1 and status in (${unfinishedStatus})`,
       [passengerId],
     )
     if (!rideData) return
@@ -60,32 +63,5 @@ export class RideRepositoryDatabase implements RideRepository {
         ride.date,
       ],
     )
-  }
-}
-
-export class RideRepositoryMemory implements RideRepository {
-  rides: Ride[]
-
-  constructor() {
-    this.rides = []
-  }
-
-  async getActiveRideByPassengerId(passengerId: string) {
-    return this.rides.find((ride) => {
-      return (
-        ride.passengerId === passengerId &&
-        UNFINISHED_RIDE_STATUS.match(ride.status)
-      )
-    })
-  }
-
-  async getRideById(rideId: string) {
-    const account = this.rides.find((ride) => ride.rideId === rideId)
-    if (!account) throw new Error("Ride not found")
-    return account
-  }
-
-  async saveRide(ride: Ride) {
-    this.rides.push(ride)
   }
 }

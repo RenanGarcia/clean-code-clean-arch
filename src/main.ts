@@ -5,9 +5,9 @@ import GetRide from "~/application/usecase/GetRide"
 import AccountController from "~/infra/controller/AccountController"
 import RideController from "~/infra/controller/RideController"
 import ExpressServerAdapter from "~/infra/http/ExpressServerAdapter"
-import { PgPromiseAdapter } from "~/infra/database/DatabaseConnection"
-import { AccountRepositoryDatabase } from "~/infra/repository/AccountRepository"
-import { RideRepositoryDatabase } from "./infra/repository/RideRepository"
+import PgPromiseAdapter from "~/infra/database/PgPromiseAdapter"
+import AccountRepositoryDatabase from "~/infra/repository/AccountRepositoryDatabase"
+import RideRepositoryDatabase from "./infra/repository/RideRepositoryDatabase"
 
 const connection = new PgPromiseAdapter()
 const httpServer = new ExpressServerAdapter()

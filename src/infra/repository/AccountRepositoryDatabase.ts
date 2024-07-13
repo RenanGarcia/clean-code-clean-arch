@@ -2,7 +2,7 @@ import Account from "~/domain/Account"
 import AccountRepository from "~/application/repository/AccountRepository"
 import DatabaseConnection from "~/infra/database/DatabaseConnection"
 
-export class AccountRepositoryDatabase implements AccountRepository {
+export default class AccountRepositoryDatabase implements AccountRepository {
   constructor(readonly connection: DatabaseConnection) {}
 
   async getAccountByEmail(email: string) {
@@ -52,27 +52,5 @@ export class AccountRepositoryDatabase implements AccountRepository {
         account.getCarPlate(),
       ],
     )
-  }
-}
-
-export class AccountRepositoryMemory implements AccountRepository {
-  accounts: Account[]
-
-  constructor() {
-    this.accounts = []
-  }
-
-  async getAccountByEmail(email: string) {
-    return this.accounts.find((a) => a.getEmail() === email)
-  }
-
-  async getAccountById(accountId: string) {
-    const account = this.accounts.find((a) => a.accountId === accountId)
-    if (!account) throw new Error("Account not found")
-    return account
-  }
-
-  async saveAccount(account: Account) {
-    this.accounts.push(account)
   }
 }

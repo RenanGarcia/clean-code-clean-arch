@@ -3,13 +3,13 @@ import Account from "~/domain/Account"
 import Signup from "~/application/usecase/Signup"
 import GetAccount from "~/application/usecase/GetAccount"
 import MailerGatewayFake from "~/infra/gateway/MailerGatewayFake"
-import { AccountRepositoryMemory } from "~/infra/repository/AccountRepository"
+import AccountRepositoryFake from "~/infra/repository/AccountRepositoryFake"
 
 let signup: Signup
 let getAccount: GetAccount
 
 beforeAll(() => {
-  const accountRepository = new AccountRepositoryMemory()
+  const accountRepository = new AccountRepositoryFake()
   signup = new Signup(accountRepository)
   getAccount = new GetAccount(accountRepository)
 })
@@ -86,15 +86,15 @@ test("Deve criar uma conta para o motorista (stub accountRepository)", async () 
   )
 
   const stubByEmail = Sinon.stub(
-    AccountRepositoryMemory.prototype,
+    AccountRepositoryFake.prototype,
     "getAccountByEmail",
   ).resolves(undefined)
   const stubSaveAccount = Sinon.stub(
-    AccountRepositoryMemory.prototype,
+    AccountRepositoryFake.prototype,
     "saveAccount",
   ).resolves()
   const stubGetAccountById = Sinon.stub(
-    AccountRepositoryMemory.prototype,
+    AccountRepositoryFake.prototype,
     "getAccountById",
   ).resolves(expectedAccount)
   const stubSendMail = Sinon.stub(MailerGatewayFake.prototype, "send")
