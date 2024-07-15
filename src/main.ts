@@ -1,26 +1,3 @@
-import Signup from "~/application/usecase/Signup"
-import GetAccount from "~/application/usecase/GetAccount"
-import RequestRide from "~/application/usecase/RequestRide"
-import GetRide from "~/application/usecase/GetRide"
-import AccountController from "~/infra/controller/AccountController"
-import RideController from "~/infra/controller/RideController"
-import ExpressServerAdapter from "~/infra/http/ExpressServerAdapter"
-import PgPromiseAdapter from "~/infra/database/PgPromiseAdapter"
-import AccountRepositoryDatabase from "~/infra/repository/AccountRepositoryDatabase"
-import RideRepositoryDatabase from "./infra/repository/RideRepositoryDatabase"
-
-const connection = new PgPromiseAdapter()
-const httpServer = new ExpressServerAdapter()
-
-const accountRepository = new AccountRepositoryDatabase(connection)
-const signup = new Signup(accountRepository)
-const getAccount = new GetAccount(accountRepository)
-
-const rideRepository = new RideRepositoryDatabase(connection)
-const requestRide = new RequestRide(accountRepository, rideRepository)
-const getRide = new GetRide(accountRepository, rideRepository)
-
-new AccountController(httpServer, signup, getAccount)
-new RideController(httpServer, requestRide, getRide)
+import { httpServer } from "./server"
 
 httpServer.listen(3000)

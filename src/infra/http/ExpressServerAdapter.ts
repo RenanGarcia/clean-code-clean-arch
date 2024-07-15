@@ -2,15 +2,16 @@ import Express from "express"
 import HttpServer, { HttpMethod, RequestHandler } from "~/infra/http/HttpServer"
 
 export default class ExpressServerAdapter implements HttpServer {
-  app: Express.Application
+  server: Express.Application
 
   constructor() {
-    this.app = Express()
-    this.app.use(Express.json())
+    this.server = Express()
+    this.server.use(Express.json())
   }
 
   register(method: HttpMethod, url: string, callback: RequestHandler) {
-    this.app[method](url.replace(/[{}]/g, ""), async (req: any, res: any) => {
+    const urlReplaced = url.replace(/[{}]/g, "")
+    this.server[method](urlReplaced, async (req: any, res: any) => {
       try {
         const output = await callback(req.params, req.body)
         return res.json(output)
@@ -21,6 +22,6 @@ export default class ExpressServerAdapter implements HttpServer {
   }
 
   listen(port: number) {
-    this.app.listen(port)
+    this.server.listen(port)
   }
 }
