@@ -9,7 +9,7 @@ export default class Account {
   private name: Name
   private cpf: Cpf
   private email: Email
-  private carPlate: CarPlate
+  private carPlate?: CarPlate
 
   constructor(
     readonly accountId: string,
@@ -25,9 +25,8 @@ export default class Account {
     this.name = new Name(name)
     this.cpf = new Cpf(cpf)
     this.email = new Email(email)
-    this.carPlate = new CarPlate(carPlate)
-    if (isDriver && !this.carPlate.isValid()) {
-      throw new Error("Driver must have a valid car plate")
+    if (isDriver) {
+      this.carPlate = new CarPlate(carPlate)
     }
   }
 
@@ -64,6 +63,6 @@ export default class Account {
   }
 
   getCarPlate() {
-    return this.carPlate.getValue()
+    return this.carPlate?.getValue()
   }
 }

@@ -90,5 +90,5 @@ test("Não deve criar uma Account de motorista sem uma placa válida", () => {
       accountInput.isDriver,
       accountInput.carPlate,
     ),
-  ).toThrow(new Error("Driver must have a valid car plate"))
+  ).toThrow(new Error("Invalid car plate"))
 })
