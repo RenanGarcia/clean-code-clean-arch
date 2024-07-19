@@ -22,13 +22,7 @@ export default class RequestRide implements UseCase {
     if (existingRide) {
       throw new Error("Already exists a ride for this passenger")
     }
-    const ride = Ride.create(
-      input.passengerId,
-      input.fromLat,
-      input.fromLong,
-      input.toLat,
-      input.toLong,
-    )
+    const ride = Ride.create(input)
     await this.rideRepository.saveRide(ride)
     return { rideId: ride.rideId }
   }

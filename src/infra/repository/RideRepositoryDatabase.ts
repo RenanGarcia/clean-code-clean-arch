@@ -16,17 +16,17 @@ export default class RideRepositoryDatabase implements RideRepository {
       [passengerId],
     )
     if (!rideData) return
-    return new Ride(
-      rideData.ride_id,
-      rideData.passenger_id,
-      rideData.status,
-      parseFloat(rideData.from_lat),
-      parseFloat(rideData.from_long),
-      parseFloat(rideData.to_lat),
-      parseFloat(rideData.to_long),
-      rideData.date,
-      rideData.driver_id,
-    )
+    return new Ride({
+      rideId: rideData.ride_id,
+      passengerId: rideData.passenger_id,
+      driverId: rideData.driver_id,
+      status: rideData.status,
+      fromLat: parseFloat(rideData.from_lat),
+      fromLong: parseFloat(rideData.from_long),
+      toLat: parseFloat(rideData.to_lat),
+      toLong: parseFloat(rideData.to_long),
+      date: rideData.date,
+    })
   }
 
   async getActiveRideByDriverId(driverId: string) {
@@ -39,17 +39,17 @@ export default class RideRepositoryDatabase implements RideRepository {
       [driverId],
     )
     if (!rideData) return
-    return new Ride(
-      rideData.ride_id,
-      rideData.passenger_id,
-      rideData.status,
-      parseFloat(rideData.from_lat),
-      parseFloat(rideData.from_long),
-      parseFloat(rideData.to_lat),
-      parseFloat(rideData.to_long),
-      rideData.date,
-      rideData.driver_id,
-    )
+    return new Ride({
+      rideId: rideData.ride_id,
+      passengerId: rideData.passenger_id,
+      driverId: rideData.driver_id,
+      status: rideData.status,
+      fromLat: parseFloat(rideData.from_lat),
+      fromLong: parseFloat(rideData.from_long),
+      toLat: parseFloat(rideData.to_lat),
+      toLong: parseFloat(rideData.to_long),
+      date: rideData.date,
+    })
   }
 
   async getRideById(rideId: string) {
@@ -58,17 +58,17 @@ export default class RideRepositoryDatabase implements RideRepository {
       [rideId],
     )
     if (!rideData) throw new Error("Ride not found")
-    return new Ride(
-      rideData.ride_id,
-      rideData.passenger_id,
-      rideData.status,
-      parseFloat(rideData.from_lat),
-      parseFloat(rideData.from_long),
-      parseFloat(rideData.to_lat),
-      parseFloat(rideData.to_long),
-      rideData.date,
-      rideData.driver_id,
-    )
+    return new Ride({
+      rideId: rideData.ride_id,
+      passengerId: rideData.passenger_id,
+      driverId: rideData.driver_id,
+      status: rideData.status,
+      fromLat: parseFloat(rideData.from_lat),
+      fromLong: parseFloat(rideData.from_long),
+      toLat: parseFloat(rideData.to_lat),
+      toLong: parseFloat(rideData.to_long),
+      date: rideData.date,
+    })
   }
 
   async saveRide(ride: Ride) {

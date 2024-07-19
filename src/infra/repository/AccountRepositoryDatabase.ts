@@ -11,15 +11,15 @@ export default class AccountRepositoryDatabase implements AccountRepository {
       [email],
     )
     if (!accountData) return
-    return new Account(
-      accountData.account_id,
-      accountData.name,
-      accountData.email,
-      accountData.cpf,
-      accountData.is_passenger,
-      accountData.is_driver,
-      accountData.car_plate,
-    )
+    return new Account({
+      accountId: accountData.account_id,
+      name: accountData.name,
+      email: accountData.email,
+      cpf: accountData.cpf,
+      isPassenger: accountData.is_passenger,
+      isDriver: accountData.is_driver,
+      carPlate: accountData.car_plate,
+    })
   }
 
   async getAccountById(accountId: string) {
@@ -28,15 +28,15 @@ export default class AccountRepositoryDatabase implements AccountRepository {
       [accountId],
     )
     if (!accountData) throw new Error("Account not found")
-    return new Account(
-      accountData.account_id,
-      accountData.name,
-      accountData.email,
-      accountData.cpf,
-      accountData.is_passenger,
-      accountData.is_driver,
-      accountData.car_plate,
-    )
+    return new Account({
+      accountId: accountData.account_id,
+      name: accountData.name,
+      email: accountData.email,
+      cpf: accountData.cpf,
+      isPassenger: accountData.is_passenger,
+      isDriver: accountData.is_driver,
+      carPlate: accountData.car_plate,
+    })
   }
 
   async saveAccount(account: Account) {

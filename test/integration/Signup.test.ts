@@ -77,17 +77,9 @@ test("Deve criar uma conta para o motorista (stub accountRepository)", async () 
     email: `test${Math.random()}@test.com.br`,
     cpf: "385.672.430-33",
     carPlate: "MVD2030",
-    isPassenger: false,
     isDriver: true,
   }
-  const expectedAccount = Account.create(
-    input.name,
-    input.email,
-    input.cpf,
-    input.isPassenger,
-    input.isDriver,
-    input.carPlate,
-  )
+  const expectedAccount = Account.create(input)
 
   const stubByEmail = Sinon.stub(
     AccountRepositoryDatabase.prototype,

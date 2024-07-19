@@ -9,13 +9,7 @@ test("Deve criar corrida", () => {
     toLat: -27.496887588317275,
     toLong: -48.522234807851476,
   }
-  const ride = Ride.create(
-    rideInput.passengerId,
-    rideInput.fromLat,
-    rideInput.fromLong,
-    rideInput.toLat,
-    rideInput.toLong,
-  )
+  const ride = Ride.create(rideInput)
   expect(ride).toBeDefined()
   expect(ride.getFrom().getLat()).toBe(rideInput.fromLat)
   expect(ride.getFrom().getLong()).toBe(rideInput.fromLong)
@@ -24,57 +18,77 @@ test("Deve criar corrida", () => {
 })
 
 test("Não deve criar corrida com coordenada inválida", () => {
-  expect(() => Ride.create("", -180, 180, -180, 180)).toThrow(
-    new Error("Invalid latitude"),
-  )
+  const input = {
+    passengerId: "",
+    fromLat: -180,
+    fromLong: 180,
+    toLat: -180,
+    toLong: 180,
+  }
+  expect(() => Ride.create(input)).toThrow(new Error("Invalid latitude"))
 })
 
 test("Deve aceitar uma corrida", () => {
-  const driverAccount = Account.create(
-    "Ganga Zumba",
-    `test${Math.random()}@test.com.br`,
-    "385.672.430-33",
-    false,
-    true,
-    "MVD2030",
-  )
-  const ride = Ride.create("", -27.58, -48.54, -27.49, -48.52)
+  const driverAccount = Account.create({
+    name: "Ganga Zumba",
+    email: `test${Math.random()}@test.com.br`,
+    cpf: "385.672.430-33",
+    isDriver: true,
+    carPlate: "MVD2030",
+  })
+  const ride = Ride.create({
+    passengerId: "",
+    fromLat: -27.58,
+    fromLong: -48.54,
+    toLat: -27.49,
+    toLong: -48.52,
+  })
   ride.accept(driverAccount)
   expect(ride.status).toBe("accepted")
   expect(ride.driverId).toBe(driverAccount.accountId)
 })
 
 test("Não pode aceitar uma corrida para uma account que não seja motorista", () => {
-  const invalidDriver = Account.create(
-    "Ganga Zumba",
-    `test${Math.random()}@test.com.br`,
-    "385.672.430-33",
-    true,
-  )
-  const ride = Ride.create("", -27.58, -48.54, -27.49, -48.52)
+  const invalidDriver = Account.create({
+    name: "Ganga Zumba",
+    email: `test${Math.random()}@test.com.br`,
+    cpf: "385.672.430-33",
+    isPassenger: true,
+  })
+  const ride = Ride.create({
+    passengerId: "",
+    fromLat: -27.58,
+    fromLong: -48.54,
+    toLat: -27.49,
+    toLong: -48.52,
+  })
   expect(() => ride.accept(invalidDriver)).toThrow(
     new Error("This account is not a driver"),
   )
 })
 
 test("Não pode aceitar uma corrida cujo status não seja requested", () => {
-  const driverAccount = Account.create(
-    "Ganga Zumba",
-    `test${Math.random()}@test.com.br`,
-    "385.672.430-33",
-    false,
-    true,
-    "MVD2030",
-  )
-  const otherDriverAccount = Account.create(
-    "Dandara Zumbi",
-    `test${Math.random()}@test.com.br`,
-    "385.672.430-33",
-    false,
-    true,
-    "MVD2030",
-  )
-  const ride = Ride.create("", -27.58, -48.54, -27.49, -48.52)
+  const driverAccount = Account.create({
+    name: "Ganga Zumba",
+    email: `test${Math.random()}@test.com.br`,
+    cpf: "385.672.430-33",
+    isDriver: true,
+    carPlate: "MVD2030",
+  })
+  const otherDriverAccount = Account.create({
+    name: "Dandara Zumbi",
+    email: `test${Math.random()}@test.com.br`,
+    cpf: "385.672.430-33",
+    isDriver: true,
+    carPlate: "MVD2030",
+  })
+  const ride = Ride.create({
+    passengerId: "",
+    fromLat: -27.58,
+    fromLong: -48.54,
+    toLat: -27.49,
+    toLong: -48.52,
+  })
   expect(ride.status).toBe("requested")
 
   ride.accept(driverAccount)

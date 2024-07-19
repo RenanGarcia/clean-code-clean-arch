@@ -6,17 +6,8 @@ test("Deve criar uma Account para um passageiro", () => {
     email: `test${Math.random()}@test.com.br`,
     cpf: "385.672.430-33",
     isPassenger: true,
-    isDriver: undefined,
-    carPlate: "",
   }
-  const account = Account.create(
-    accountInput.name,
-    accountInput.email,
-    accountInput.cpf,
-    accountInput.isPassenger,
-    accountInput.isDriver,
-    accountInput.carPlate,
-  )
+  const account = Account.create(accountInput)
   expect(account).toBeDefined()
   expect(account.getName()).toBe(accountInput.name)
   expect(account.getEmail()).toBe(accountInput.email)
@@ -30,18 +21,10 @@ test("Deve criar uma Account para um motorista", () => {
     name: "Malcon X",
     email: `test${Math.random()}@test.com.br`,
     cpf: "385.672.430-33",
-    isPassenger: undefined,
     isDriver: true,
     carPlate: "MVD2030",
   }
-  const account = Account.create(
-    accountInput.name,
-    accountInput.email,
-    accountInput.cpf,
-    accountInput.isPassenger,
-    accountInput.isDriver,
-    accountInput.carPlate,
-  )
+  const account = Account.create(accountInput)
   expect(account).toBeDefined()
   expect(account.getName()).toBe(accountInput.name)
   expect(account.getEmail()).toBe(accountInput.email)
@@ -60,16 +43,9 @@ test("Não deve criar uma Account com conflitos de tipo", () => {
     isDriver: true,
     carPlate: "MVD2030",
   }
-  expect(() =>
-    Account.create(
-      accountInput.name,
-      accountInput.email,
-      accountInput.cpf,
-      accountInput.isPassenger,
-      accountInput.isDriver,
-      accountInput.carPlate,
-    ),
-  ).toThrow(new Error("Account type is not defined"))
+  expect(() => Account.create(accountInput)).toThrow(
+    new Error("Account type is not defined"),
+  )
 })
 
 test("Não deve criar uma Account de motorista sem uma placa válida", () => {
@@ -77,18 +53,9 @@ test("Não deve criar uma Account de motorista sem uma placa válida", () => {
     name: "Malcon X",
     email: `test${Math.random()}@test.com.br`,
     cpf: "385.672.430-33",
-    isPassenger: undefined,
     isDriver: true,
-    carPlate: "",
   }
-  expect(() =>
-    Account.create(
-      accountInput.name,
-      accountInput.email,
-      accountInput.cpf,
-      accountInput.isPassenger,
-      accountInput.isDriver,
-      accountInput.carPlate,
-    ),
-  ).toThrow(new Error("Invalid car plate"))
+  expect(() => Account.create(accountInput)).toThrow(
+    new Error("Invalid car plate"),
+  )
 })
