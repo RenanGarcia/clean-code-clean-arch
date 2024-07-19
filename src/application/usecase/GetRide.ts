@@ -18,6 +18,7 @@ export default class GetRide implements UseCase {
       passengerId: ride.passengerId,
       passengerName: passenger.getName(),
       passengerEmail: passenger.getEmail(),
+      driverId: ride.driverId,
       status: ride.status,
       fromLat: ride.getFrom().getLat(),
       fromLong: ride.getFrom().getLong(),
@@ -33,6 +34,7 @@ export type Output = {
   passengerId: string
   passengerName: string
   passengerEmail: string
+  driverId?: string
   status: string
   fromLat: number
   fromLong: number
