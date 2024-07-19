@@ -8,7 +8,7 @@ test("Deve criar uma placa válida", () => {
 })
 
 test.each(["", null, undefined, "1234"])(
-  "Não deve permitir criar uma placa com valor vazio",
+  "Não deve permitir criar uma placa com valor vazio: [%s]",
   (input: any) => {
     expect(() => new CarPlate(input)).toThrow(new Error("Invalid car plate"))
   },

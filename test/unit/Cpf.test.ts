@@ -14,6 +14,6 @@ test.each([
   "123456",
   "1234567891011121314",
   "11111111111",
-])("Deve testar se o cpf é inválido: %s", (cpf: any) => {
+])("Deve testar se o cpf é inválido: [%s]", (cpf: any) => {
   expect(() => new Cpf(cpf)).toThrow(new Error("Invalid CPF"))
 })
