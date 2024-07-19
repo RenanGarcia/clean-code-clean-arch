@@ -74,4 +74,11 @@ export default class Ride {
     this.driverId = driver.accountId
     this.status = "accepted"
   }
+
+  start() {
+    if (this.status !== "accepted") {
+      throw new Error("This ride cannot be started")
+    }
+    this.status = "in_progress"
+  }
 }

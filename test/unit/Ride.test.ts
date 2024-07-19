@@ -96,3 +96,33 @@ test("Não pode aceitar uma corrida cujo status não seja requested", () => {
     new Error("Ivalid ride status"),
   )
 })
+
+test("Deve iniciar uma corrida", () => {
+  const driverAccount = Account.create({
+    name: "Ganga Zumba",
+    email: `test${Math.random()}@test.com.br`,
+    cpf: "385.672.430-33",
+    isDriver: true,
+    carPlate: "MVD2030",
+  })
+  const ride = Ride.create({
+    passengerId: "",
+    fromLat: -27.58,
+    fromLong: -48.54,
+    toLat: -27.49,
+    toLong: -48.52,
+  })
+  ride.accept(driverAccount)
+  ride.start()
+})
+
+test("Não deve iniciar uma corrida que ainda não foi aceita", () => {
+  const ride = Ride.create({
+    passengerId: "",
+    fromLat: -27.58,
+    fromLong: -48.54,
+    toLat: -27.49,
+    toLong: -48.52,
+  })
+  expect(() => ride.start()).toThrow(new Error("This ride cannot be started"))
+})
