@@ -5,8 +5,10 @@ import DatabaseConnection from "~/infra/database/DatabaseConnection"
 import PgPromiseAdapter from "~/infra/database/PgPromiseAdapter"
 import AccountRepositoryDatabase from "~/infra/repository/AccountRepositoryDatabase"
 import RideRepositoryDatabase from "~/infra/repository/RideRepositoryDatabase"
+import PositionRepositoryDatabase from "~/infra/repository/PositionRepositoryDatabase"
 import AccountRepositoryFake from "~/infra/repository/AccountRepositoryFake"
 import RideRepositoryFake from "~/infra/repository/RideRepositoryFake"
+import PositionRepositoryFake from "~/infra/repository/PositionRepositoryFake"
 
 let signup: Signup
 let requestRide: RequestRide
@@ -17,9 +19,11 @@ beforeEach(() => {
   connection = new PgPromiseAdapter()
   const accountRepository = new AccountRepositoryDatabase(connection)
   const rideRepository = new RideRepositoryDatabase(connection)
+  const positionRepository = new PositionRepositoryDatabase(connection)
+
   signup = new Signup(accountRepository)
   requestRide = new RequestRide(accountRepository, rideRepository)
-  getRide = new GetRide(accountRepository, rideRepository)
+  getRide = new GetRide(accountRepository, rideRepository, positionRepository)
 })
 
 afterEach(() => {
@@ -59,9 +63,14 @@ test("Deve solicitar uma corrida (fake repositories)", async () => {
   }
   const accountRepository = new AccountRepositoryFake()
   const rideRepository = new RideRepositoryFake()
+  const positionRepository = new PositionRepositoryFake()
   const signup = new Signup(accountRepository)
   const requestRide = new RequestRide(accountRepository, rideRepository)
-  const getRide = new GetRide(accountRepository, rideRepository)
+  const getRide = new GetRide(
+    accountRepository,
+    rideRepository,
+    positionRepository,
+  )
 
   const singupOutput = await signup.execute(userInput)
   const requestRideInput = {

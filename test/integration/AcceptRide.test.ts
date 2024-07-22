@@ -6,6 +6,7 @@ import DatabaseConnection from "~/infra/database/DatabaseConnection"
 import PgPromiseAdapter from "~/infra/database/PgPromiseAdapter"
 import AccountRepositoryDatabase from "~/infra/repository/AccountRepositoryDatabase"
 import RideRepositoryDatabase from "~/infra/repository/RideRepositoryDatabase"
+import PositionRepositoryDatabase from "~/infra/repository/PositionRepositoryDatabase"
 
 let signup: Signup
 let requestRide: RequestRide
@@ -17,10 +18,11 @@ beforeEach(() => {
   connection = new PgPromiseAdapter()
   const accountRepository = new AccountRepositoryDatabase(connection)
   const rideRepository = new RideRepositoryDatabase(connection)
+  const positionRepository = new PositionRepositoryDatabase(connection)
   signup = new Signup(accountRepository)
   requestRide = new RequestRide(accountRepository, rideRepository)
   acceptRide = new AcceptRide(accountRepository, rideRepository)
-  getRide = new GetRide(accountRepository, rideRepository)
+  getRide = new GetRide(accountRepository, rideRepository, positionRepository)
 })
 
 afterEach(() => {
@@ -52,8 +54,6 @@ test("Deve aceitar uma corrida", async () => {
     toLong: -48.522234807851476,
   }
   const { rideId } = await requestRide.execute(requestRideInput)
-  expect(rideId).toBeDefined()
-
   await acceptRide.execute({ rideId, driverId })
   const getRideOutput = await getRide.execute(rideId)
   expect(getRideOutput.driverId).toBeDefined()
@@ -85,8 +85,6 @@ test("Não deve aceitar uma corrida cujo status seja accepted ou in_progress", a
     toLong: -48.522234807851476,
   }
   const { rideId } = await requestRide.execute(requestRideInput)
-  expect(rideId).toBeDefined()
-
   await acceptRide.execute({ rideId, driverId })
   await expect(acceptRide.execute({ rideId, driverId })).rejects.toThrow(
     new Error("Already exists a ride for this driver"),

@@ -1,11 +1,13 @@
 import UseCase from "~/application/usecase/UseCase"
 import RideRepository from "~/application/repository/RideRepository"
 import AccountRepository from "~/application/repository/AccountRepository"
+import PositionRepository from "../repository/PositionRepository"
 
 export default class GetRide implements UseCase {
   constructor(
     readonly accountRepository: AccountRepository,
     readonly rideRepository: RideRepository,
+    readonly positionRepository: PositionRepository,
   ) {}
 
   async execute(rideId: string): Promise<Output> {
@@ -13,6 +15,8 @@ export default class GetRide implements UseCase {
     const passenger = await this.accountRepository.getAccountById(
       ride.passengerId,
     )
+    const currentPosition =
+      await this.positionRepository.getLastPositionFromRideId(rideId)
     return {
       rideId: ride.rideId,
       passengerId: ride.passengerId,
@@ -25,6 +29,8 @@ export default class GetRide implements UseCase {
       toLat: ride.getTo().getLat(),
       toLong: ride.getTo().getLong(),
       date: ride.date,
+      currentLat: currentPosition?.coord.getLat(),
+      currentLong: currentPosition?.coord.getLong(),
     }
   }
 }
@@ -40,5 +46,7 @@ export type Output = {
   fromLong: number
   toLat: number
   toLong: number
+  currentLat?: number
+  currentLong?: number
   date: Date
 }
