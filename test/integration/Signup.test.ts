@@ -1,5 +1,5 @@
 import Sinon from "sinon"
-import Account from "~/domain/Account"
+import Account from "~/domain/entity/Account"
 import Signup from "~/application/usecase/Signup"
 import GetAccount from "~/application/usecase/GetAccount"
 import MailerGatewayFake from "~/infra/gateway/MailerGatewayFake"

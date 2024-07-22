@@ -1,4 +1,4 @@
-import Ride from "~/domain/Ride"
+import Ride from "~/domain/entity/Ride"
 import RideRepository from "~/application/repository/RideRepository"
 import { ACTIVE_RIDE_STATUS, UNFINISHED_RIDE_STATUS } from "~/constants"
 

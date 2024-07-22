@@ -1,4 +1,4 @@
-import Position from "~/domain/Position"
+import Position from "~/domain/entity/Position"
 import PositionRepository from "~/application/repository/PositionRepository"
 
 export default class PositionRepositoryFake implements PositionRepository {

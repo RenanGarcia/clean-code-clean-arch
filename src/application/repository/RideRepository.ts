@@ -1,4 +1,4 @@
-import Ride from "~/domain/Ride"
+import Ride from "~/domain/entity/Ride"
 
 export default interface RideRepository {
   saveRide(ride: Ride): Promise<void>

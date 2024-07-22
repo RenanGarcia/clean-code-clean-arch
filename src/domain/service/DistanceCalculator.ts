@@ -1,4 +1,4 @@
-import Coord from "~/domain/Coord"
+import Coord from "~/domain/vo/Coord"
 
 export default class DistanceCalculator {
   static calculate(from: Coord, to: Coord) {

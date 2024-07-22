@@ -1,5 +1,5 @@
-import Coord from "~/domain/Coord"
-import DistanceCalculator from "~/domain/DistanceCalculator"
+import Coord from "~/domain/vo/Coord"
+import DistanceCalculator from "~/domain/service/DistanceCalculator"
 
 test("Deve caucular a distância entre duas coordenadas", () => {
   const from = new Coord(-27.584905257808835, -48.545022195325124)

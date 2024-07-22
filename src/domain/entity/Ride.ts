@@ -1,7 +1,7 @@
 import crypto from "crypto"
 
-import Coord from "~/domain/Coord"
-import Account from "~/domain/Account"
+import Coord from "~/domain/vo/Coord"
+import Account from "~/domain/entity/Account"
 
 export type RideProps = {
   rideId?: string
@@ -21,6 +21,11 @@ export type MandatoryRideProps = RideProps & {
   date: Date
 }
 
+/**
+ * Entity Ride
+ * Aggregate root Ride that contains:
+ *   - Coord
+ */
 export default class Ride {
   private from: Coord
   private to: Coord

@@ -1,4 +1,4 @@
-import Position from "~/domain/Position"
+import Position from "~/domain/entity/Position"
 import UseCase from "~/application/usecase/UseCase"
 import PositionRepository from "~/application/repository/PositionRepository"
 import RideRepository from "~/application/repository/RideRepository"

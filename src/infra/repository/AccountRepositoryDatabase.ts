@@ -1,4 +1,4 @@
-import Account from "~/domain/Account"
+import Account from "~/domain/entity/Account"
 import AccountRepository from "~/application/repository/AccountRepository"
 import DatabaseConnection from "~/infra/database/DatabaseConnection"
 

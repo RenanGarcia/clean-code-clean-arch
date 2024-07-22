@@ -1,4 +1,4 @@
-import Position from "~/domain/Position"
+import Position from "~/domain/entity/Position"
 
 export default interface PositionRepository {
   savePosition(position: Position): Promise<void>

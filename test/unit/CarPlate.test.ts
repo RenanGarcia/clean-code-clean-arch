@@ -1,4 +1,4 @@
-import CarPlate from "~/domain/CarPlate"
+import CarPlate from "~/domain/vo/CarPlate"
 
 test("Deve criar uma placa válida", () => {
   const inputValue = "MVD2030"

@@ -1,4 +1,4 @@
-import Ride from "~/domain/Ride"
+import Ride from "~/domain/entity/Ride"
 import UseCase from "~/application/usecase/UseCase"
 import AccountRepository from "~/application/repository/AccountRepository"
 import RideRepository from "~/application/repository/RideRepository"

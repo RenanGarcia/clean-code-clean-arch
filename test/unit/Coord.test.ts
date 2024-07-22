@@ -1,4 +1,4 @@
-import Coord from "~/domain/Coord"
+import Coord from "~/domain/vo/Coord"
 
 test("Deve criar uma coordenada válida", () => {
   const lat = -27.584905257808835

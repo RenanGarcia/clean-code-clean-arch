@@ -1,9 +1,9 @@
 import crypto from "crypto"
 
-import Cpf from "~/domain/Cpf"
-import Name from "~/domain/Name"
-import Email from "~/domain/Email"
-import CarPlate from "~/domain/CarPlate"
+import Cpf from "~/domain/vo/Cpf"
+import Name from "~/domain/vo/Name"
+import Email from "~/domain/vo/Email"
+import CarPlate from "~/domain/vo/CarPlate"
 
 export type AccountProps = {
   accountId?: string
@@ -21,6 +21,14 @@ export type MandatoryAccountProps = AccountProps & {
   accountId: string
 }
 
+/**
+ * Entity Account
+ * Aggregate root Account that contains:
+ *   - Name
+ *   - Cpf
+ *   - Email
+ *   - CarPlate
+ */
 export default class Account {
   readonly accountId: string
   private name: Name

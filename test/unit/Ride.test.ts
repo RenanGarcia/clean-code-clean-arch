@@ -1,5 +1,5 @@
-import Account from "~/domain/Account"
-import Ride from "~/domain/Ride"
+import Account from "~/domain/entity/Account"
+import Ride from "~/domain/entity/Ride"
 
 test("Deve criar corrida", () => {
   const rideInput = {

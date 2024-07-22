@@ -1,4 +1,4 @@
-import Account from "~/domain/Account"
+import Account from "~/domain/entity/Account"
 
 test("Deve criar uma Account para um passageiro", () => {
   const accountInput = {

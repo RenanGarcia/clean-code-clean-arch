@@ -1,4 +1,4 @@
-import Cpf from "~/domain/Cpf"
+import Cpf from "~/domain/vo/Cpf"
 
 test.each(["763.410.050-16", "71428793860", "87748248800"])(
   "Deve testar se o cpf é valido: %s",

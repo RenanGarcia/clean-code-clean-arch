@@ -1,6 +1,6 @@
 import crypto from "crypto"
 
-import Coord from "~/domain/Coord"
+import Coord from "~/domain/vo/Coord"
 
 export type PositionProps = {
   positionId?: string
