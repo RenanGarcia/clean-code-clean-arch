@@ -39,7 +39,7 @@ export default class Position {
     return new Position({
       ...props,
       positionId: crypto.randomUUID(),
-      date: new Date(),
+      date: props.date || new Date(),
     })
   }
 }

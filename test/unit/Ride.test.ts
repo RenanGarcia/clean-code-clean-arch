@@ -165,4 +165,5 @@ test("Deve calcular a posição de uma corrida no horário noturno", () => {
   })
   ride.updatePosition(lastPosition, currentPosition)
   expect(ride.distance).toBe(10)
+  expect(ride.fare).toBe(39)
 })

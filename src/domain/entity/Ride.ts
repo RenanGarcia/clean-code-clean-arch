@@ -4,6 +4,7 @@ import Coord from "~/domain/vo/Coord"
 import Account from "~/domain/entity/Account"
 import Segment from "~/domain/vo/Segment"
 import Position from "~/domain/entity/Position"
+import { FareCalculatorFactory } from "~/domain/service/FareCalculator"
 
 export type RideProps = {
   rideId?: string
@@ -16,6 +17,7 @@ export type RideProps = {
   date?: Date
   driverId?: string
   distance?: number
+  fare?: number
 }
 
 export type MandatoryRideProps = RideProps & {
@@ -23,6 +25,7 @@ export type MandatoryRideProps = RideProps & {
   status: string
   date: Date
   distance: number
+  fare: number
 }
 
 /**
@@ -39,6 +42,7 @@ export default class Ride {
   status: string
   driverId?: string
   distance: number
+  fare: number
 
   constructor({
     rideId,
@@ -51,6 +55,7 @@ export default class Ride {
     date,
     driverId,
     distance,
+    fare,
   }: MandatoryRideProps) {
     this.rideId = rideId
     this.passengerId = passengerId
@@ -60,6 +65,7 @@ export default class Ride {
     this.date = date
     this.driverId = driverId
     this.distance = distance
+    this.fare = fare
   }
 
   // Pattern: Static Fabric Method
@@ -70,6 +76,7 @@ export default class Ride {
       status: "requested",
       date: new Date(),
       distance: 0,
+      fare: 0,
     })
   }
 
@@ -98,5 +105,7 @@ export default class Ride {
     const segment = new Segment(lastPosition.coord, currentPosition.coord)
     const distance = segment.getDistance()
     this.distance += distance
+    const fareCalculator = FareCalculatorFactory.create(currentPosition.date)
+    this.fare += fareCalculator.calculate(distance)
   }
 }

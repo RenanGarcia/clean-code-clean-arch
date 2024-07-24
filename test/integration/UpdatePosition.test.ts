@@ -36,7 +36,7 @@ afterEach(() => {
   connection.close()
 })
 
-test("Deve atualizar a posição de uma corrida", async () => {
+test("Deve atualizar a posição de uma corrida durante o horário noturno", async () => {
   const userInput = {
     name: "Renan Garcia",
     email: `test${Math.random()}@test.com.br`,
@@ -56,10 +56,12 @@ test("Deve atualizar a posição de uma corrida", async () => {
   const initialPosition = {
     lat: -27.584905257808835,
     long: -48.545022195325124,
+    date: new Date("2023-03-01T23:00:00"),
   }
   const finalPosition = {
     lat: -27.496887588317275,
     long: -48.522234807851476,
+    date: new Date("2023-03-01T23:10:00"),
   }
   const requestRideInput = {
     passengerId: userSingupOutput.accountId,
@@ -77,4 +79,5 @@ test("Deve atualizar a posição de uma corrida", async () => {
   expect(getRideOutput.currentLat).toBe(finalPosition.lat)
   expect(getRideOutput.currentLong).toBe(finalPosition.long)
   expect(getRideOutput.distance).toBe(10)
+  expect(getRideOutput.fare).toBe(39)
 })
