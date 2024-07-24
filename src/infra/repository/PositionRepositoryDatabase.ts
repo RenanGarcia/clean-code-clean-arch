@@ -1,13 +1,21 @@
 import Position from "~/domain/entity/Position"
 import PositionRepository from "~/application/repository/PositionRepository"
 import DatabaseConnection from "~/infra/database/DatabaseConnection"
+import { createSQLInsertFields } from "~/utils"
 
 export default class PositionRepositoryDatabase implements PositionRepository {
   constructor(readonly connection: DatabaseConnection) {}
 
   async savePosition(position: Position) {
+    const fields = createSQLInsertFields([
+      "position_id",
+      "ride_id",
+      "lat",
+      "long",
+      "date",
+    ])
     await this.connection.query(
-      "insert into cccat17.position (position_id, ride_id, lat, long, date) values ($1, $2, $3, $4, $5)",
+      `insert into cccat17.position (${fields.names}) values (${fields.values})`,
       [
         position.positionId,
         position.rideId,

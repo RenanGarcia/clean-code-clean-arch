@@ -1,6 +1,7 @@
 import Account from "~/domain/entity/Account"
 import AccountRepository from "~/application/repository/AccountRepository"
 import DatabaseConnection from "~/infra/database/DatabaseConnection"
+import { createSQLInsertFields } from "~/utils"
 
 export default class AccountRepositoryDatabase implements AccountRepository {
   constructor(readonly connection: DatabaseConnection) {}
@@ -40,8 +41,17 @@ export default class AccountRepositoryDatabase implements AccountRepository {
   }
 
   async saveAccount(account: Account) {
+    const fields = createSQLInsertFields([
+      "account_id",
+      "name",
+      "email",
+      "cpf",
+      "is_passenger",
+      "is_driver",
+      "car_plate",
+    ])
     await this.connection.query(
-      "insert into cccat17.account (account_id, name, email, cpf, is_passenger, is_driver, car_plate) values ($1, $2, $3, $4, $5, $6, $7)",
+      `insert into cccat17.account (${fields.names}) values (${fields.values})`,
       [
         account.accountId,
         account.getName(),
