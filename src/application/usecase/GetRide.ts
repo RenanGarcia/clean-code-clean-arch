@@ -31,6 +31,7 @@ export default class GetRide implements UseCase {
       date: ride.date,
       currentLat: currentPosition?.coord.getLat(),
       currentLong: currentPosition?.coord.getLong(),
+      distance: ride.distance,
     }
   }
 }
@@ -49,4 +50,5 @@ export type Output = {
   currentLat?: number
   currentLong?: number
   date: Date
+  distance: number
 }

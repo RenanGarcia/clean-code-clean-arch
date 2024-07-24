@@ -76,4 +76,5 @@ test("Deve atualizar a posição de uma corrida", async () => {
   const getRideOutput = await getRide.execute(rideId)
   expect(getRideOutput.currentLat).toBe(finalPosition.lat)
   expect(getRideOutput.currentLong).toBe(finalPosition.long)
+  expect(getRideOutput.distance).toBe(10)
 })

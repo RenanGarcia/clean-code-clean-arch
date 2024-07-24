@@ -81,6 +81,6 @@ test("Não deve aceitar uma corrida que não tenha sido aceita", async () => {
   }
   const { rideId } = await requestRide.execute(requestRideInput)
   await expect(startRide.execute(rideId)).rejects.toThrow(
-    new Error("This ride cannot be started"),
+    new Error("Ivalid ride status"),
   )
 })

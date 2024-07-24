@@ -2,6 +2,8 @@ import crypto from "crypto"
 
 import Coord from "~/domain/vo/Coord"
 import Account from "~/domain/entity/Account"
+import Segment from "~/domain/vo/Segment"
+import Position from "~/domain/entity/Position"
 
 export type RideProps = {
   rideId?: string
@@ -13,12 +15,14 @@ export type RideProps = {
   toLong: number
   date?: Date
   driverId?: string
+  distance?: number
 }
 
 export type MandatoryRideProps = RideProps & {
   rideId: string
   status: string
   date: Date
+  distance: number
 }
 
 /**
@@ -27,13 +31,14 @@ export type MandatoryRideProps = RideProps & {
  *   - Coord
  */
 export default class Ride {
+  readonly rideId: string
+  readonly passengerId: string
+  readonly date: Date
   private from: Coord
   private to: Coord
   status: string
   driverId?: string
-  readonly rideId: string
-  readonly passengerId: string
-  readonly date: Date
+  distance: number
 
   constructor({
     rideId,
@@ -45,6 +50,7 @@ export default class Ride {
     toLong,
     date,
     driverId,
+    distance,
   }: MandatoryRideProps) {
     this.rideId = rideId
     this.passengerId = passengerId
@@ -53,6 +59,7 @@ export default class Ride {
     this.to = new Coord(toLat, toLong)
     this.date = date
     this.driverId = driverId
+    this.distance = distance
   }
 
   // Pattern: Static Fabric Method
@@ -62,6 +69,7 @@ export default class Ride {
       rideId: crypto.randomUUID(),
       status: "requested",
       date: new Date(),
+      distance: 0,
     })
   }
 
@@ -81,9 +89,14 @@ export default class Ride {
   }
 
   start() {
-    if (this.status !== "accepted") {
-      throw new Error("This ride cannot be started")
-    }
+    if (this.status !== "accepted") throw new Error("Ivalid ride status")
     this.status = "in_progress"
+  }
+
+  updatePosition(lastPosition: Position, currentPosition: Position) {
+    if (this.status !== "in_progress") throw new Error("Ivalid ride status")
+    const segment = new Segment(lastPosition.coord, currentPosition.coord)
+    const distance = segment.getDistance()
+    this.distance += distance
   }
 }

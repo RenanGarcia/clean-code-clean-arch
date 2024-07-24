@@ -26,6 +26,7 @@ export default class RideRepositoryDatabase implements RideRepository {
       toLat: parseFloat(rideData.to_lat),
       toLong: parseFloat(rideData.to_long),
       date: rideData.date,
+      distance: parseFloat(rideData.distance),
     })
   }
 
@@ -49,6 +50,7 @@ export default class RideRepositoryDatabase implements RideRepository {
       toLat: parseFloat(rideData.to_lat),
       toLong: parseFloat(rideData.to_long),
       date: rideData.date,
+      distance: parseFloat(rideData.distance),
     })
   }
 
@@ -68,6 +70,7 @@ export default class RideRepositoryDatabase implements RideRepository {
       toLat: parseFloat(rideData.to_lat),
       toLong: parseFloat(rideData.to_long),
       date: rideData.date,
+      distance: parseFloat(rideData.distance),
     })
   }
 
@@ -80,7 +83,7 @@ export default class RideRepositoryDatabase implements RideRepository {
         ride.driverId,
         ride.status,
         null, // ride.fare,
-        null, // ride.distance,
+        ride.distance,
         ride.getFrom().getLat(),
         ride.getFrom().getLong(),
         ride.getTo().getLat(),
@@ -92,8 +95,8 @@ export default class RideRepositoryDatabase implements RideRepository {
 
   async updateRide(ride: Ride) {
     await this.connection.query(
-      "update cccat17.ride set driver_id = $1, status = $2 where ride_id = $3",
-      [ride.driverId, ride.status, ride.rideId],
+      "update cccat17.ride set driver_id = $1, status = $2, distance = $3 where ride_id = $4",
+      [ride.driverId, ride.status, ride.distance, ride.rideId],
     )
   }
 }

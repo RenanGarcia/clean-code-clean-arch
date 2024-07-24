@@ -1,5 +1,6 @@
 import Account from "~/domain/entity/Account"
 import Ride from "~/domain/entity/Ride"
+import Position from "~/domain/entity/Position"
 
 test("Deve criar corrida", () => {
   const rideInput = {
@@ -124,5 +125,44 @@ test("Não deve iniciar uma corrida que ainda não foi aceita", () => {
     toLat: -27.49,
     toLong: -48.52,
   })
-  expect(() => ride.start()).toThrow(new Error("This ride cannot be started"))
+  expect(() => ride.start()).toThrow(new Error("Ivalid ride status"))
+})
+
+test("Deve calcular a posição de uma corrida no horário noturno", () => {
+  const initialPosition = {
+    lat: -27.584905257808835,
+    long: -48.545022195325124,
+    date: new Date("2023-03-01T23:00:00"),
+  }
+  const finalPosition = {
+    lat: -27.496887588317275,
+    long: -48.522234807851476,
+    date: new Date("2023-03-01T23:10:00"),
+  }
+  const ride = Ride.create({
+    passengerId: "",
+    fromLat: initialPosition.lat,
+    fromLong: initialPosition.long,
+    toLat: finalPosition.lat,
+    toLong: finalPosition.long,
+  })
+  const driverAccount = Account.create({
+    name: "Ganga Zumba",
+    email: `test${Math.random()}@test.com.br`,
+    cpf: "385.672.430-33",
+    isDriver: true,
+    carPlate: "MVD2030",
+  })
+  ride.accept(driverAccount)
+  ride.start()
+  const lastPosition = Position.create({
+    rideId: ride.rideId,
+    ...initialPosition,
+  })
+  const currentPosition = Position.create({
+    rideId: ride.rideId,
+    ...finalPosition,
+  })
+  ride.updatePosition(lastPosition, currentPosition)
+  expect(ride.distance).toBe(10)
 })

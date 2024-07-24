@@ -11,11 +11,12 @@ export default class UpdatePosition implements UseCase {
 
   async execute(input: Input): Promise<void> {
     const ride = await this.rideRepository.getRideById(input.rideId)
-    if (ride.status !== "in_progress") {
-      throw new Error("This ride is not in progress")
-    }
     const position = Position.create(input)
+    const lastPosition =
+      await this.positionRepository.getLastPositionFromRideId(input.rideId)
+    if (lastPosition) ride.updatePosition(lastPosition, position)
     await this.positionRepository.savePosition(position)
+    await this.rideRepository.updateRide(ride)
   }
 }
 
@@ -23,4 +24,5 @@ type Input = {
   rideId: string
   lat: number
   long: number
+  date: Date
 }
