@@ -4,6 +4,7 @@ import Cpf from "~/domain/vo/Cpf"
 import Name from "~/domain/vo/Name"
 import Email from "~/domain/vo/Email"
 import CarPlate from "~/domain/vo/CarPlate"
+import Password, { PasswordFactory } from "~/domain/vo/Password"
 
 export type AccountProps = {
   accountId?: string
@@ -13,12 +14,16 @@ export type AccountProps = {
   carPlate?: string
   isPassenger?: boolean
   isDriver?: boolean
+  password?: string
+  passwordType?: string
 }
 
 export type MandatoryAccountProps = AccountProps & {
   isPassenger: boolean
   isDriver: boolean
   accountId: string
+  password: string
+  passwordType: string
 }
 
 /**
@@ -37,6 +42,8 @@ export default class Account {
   private carPlate?: CarPlate
   readonly isPassenger: boolean
   readonly isDriver: boolean
+  private password: Password
+  readonly passwordType: string
 
   constructor({
     accountId,
@@ -46,6 +53,8 @@ export default class Account {
     isPassenger,
     isDriver,
     carPlate,
+    password,
+    passwordType,
   }: MandatoryAccountProps) {
     if ((!isPassenger && !isDriver) || (isPassenger && isDriver))
       throw new Error("Account type is not defined")
@@ -58,6 +67,8 @@ export default class Account {
     this.accountId = accountId
     this.isPassenger = !!isPassenger
     this.isDriver = !!isDriver
+    this.password = PasswordFactory.create(password, passwordType)
+    this.passwordType = passwordType
   }
 
   // Pattern: Static Fabric Method
@@ -67,6 +78,8 @@ export default class Account {
       accountId: crypto.randomUUID(),
       isPassenger: !!props.isPassenger,
       isDriver: !!props.isDriver,
+      password: props.password || "to_be_reseted",
+      passwordType: props.passwordType || "plain",
     })
   }
 
@@ -84,5 +97,13 @@ export default class Account {
 
   getCarPlate() {
     return this.carPlate?.getValue()
+  }
+
+  getPassword() {
+    return this.password.value
+  }
+
+  verifyPassword(password: string) {
+    return this.password.verify(password)
   }
 }

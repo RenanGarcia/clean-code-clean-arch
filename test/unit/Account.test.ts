@@ -59,3 +59,45 @@ test("Não deve criar uma Account de motorista sem uma placa válida", () => {
     new Error("Invalid car plate"),
   )
 })
+
+test("deve criar uma Account com passwword em plain text", () => {
+  const accountInput = {
+    name: "Malcon X",
+    email: `test${Math.random()}@test.com.br`,
+    cpf: "385.672.430-33",
+    isPassenger: true,
+    password: "plaintextpassword",
+    passwordType: "plain",
+  }
+  const account = Account.create(accountInput)
+  expect(account).toBeDefined()
+  expect(account.verifyPassword(accountInput.password)).toBe(true)
+})
+
+test("deve criar uma Account com passwword em md5", () => {
+  const accountInput = {
+    name: "Malcon X",
+    email: `test${Math.random()}@test.com.br`,
+    cpf: "385.672.430-33",
+    isPassenger: true,
+    password: "plaintextpassword",
+    passwordType: "md5",
+  }
+  const account = Account.create(accountInput)
+  expect(account).toBeDefined()
+  expect(account.verifyPassword(accountInput.password)).toBe(true)
+})
+
+test("deve criar uma Account com passwword em sha1", () => {
+  const accountInput = {
+    name: "Malcon X",
+    email: `test${Math.random()}@test.com.br`,
+    cpf: "385.672.430-33",
+    isPassenger: true,
+    password: "plaintextpassword",
+    passwordType: "sha1",
+  }
+  const account = Account.create(accountInput)
+  expect(account).toBeDefined()
+  expect(account.verifyPassword(accountInput.password)).toBe(true)
+})

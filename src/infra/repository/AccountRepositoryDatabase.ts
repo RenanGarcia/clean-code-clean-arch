@@ -20,6 +20,8 @@ export default class AccountRepositoryDatabase implements AccountRepository {
       isPassenger: accountData.is_passenger,
       isDriver: accountData.is_driver,
       carPlate: accountData.car_plate,
+      password: accountData.password,
+      passwordType: accountData.password_type,
     })
   }
 
@@ -37,6 +39,8 @@ export default class AccountRepositoryDatabase implements AccountRepository {
       isPassenger: accountData.is_passenger,
       isDriver: accountData.is_driver,
       carPlate: accountData.car_plate,
+      password: accountData.password,
+      passwordType: accountData.password_type,
     })
   }
 
@@ -49,6 +53,8 @@ export default class AccountRepositoryDatabase implements AccountRepository {
       "is_passenger",
       "is_driver",
       "car_plate",
+      "password",
+      "password_type",
     ])
     await this.connection.query(
       `insert into cccat17.account (${fields.names}) values (${fields.values})`,
@@ -60,6 +66,8 @@ export default class AccountRepositoryDatabase implements AccountRepository {
         account.isPassenger,
         account.isDriver,
         account.getCarPlate(),
+        account.getPassword(),
+        account.passwordType,
       ],
     )
   }
