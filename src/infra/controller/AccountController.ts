@@ -1,13 +1,19 @@
 import Signup from "~/application/usecase/Signup"
 import GetAccount from "~/application/usecase/GetAccount"
 import HttpServer from "~/infra/http/HttpServer"
+import { inject } from "~/infra/di/Registry"
 
 export default class AccountController {
-  constructor(
-    readonly httpServer: HttpServer,
-    readonly signup: Signup,
-    readonly getAccount: GetAccount,
-  ) {
+  @inject("httpServer")
+  httpServer!: HttpServer
+
+  @inject("signup")
+  signup!: Signup
+
+  @inject("getAccount")
+  getAccount!: GetAccount
+
+  constructor() {
     this.httpServer.register(
       "post",
       "/signup",
@@ -19,7 +25,7 @@ export default class AccountController {
     this.httpServer.register(
       "get",
       "/accounts/:{accountId}",
-      async (params: any, body: any) => {
+      async (params: any) => {
         return await this.getAccount.execute(params.accountId)
       },
     )

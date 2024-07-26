@@ -1,13 +1,19 @@
 import RequestRide from "~/application/usecase/RequestRide"
 import GetRide from "~/application/usecase/GetRide"
 import HttpServer from "~/infra/http/HttpServer"
+import { inject } from "~/infra/di/Registry"
 
 export default class RideController {
-  constructor(
-    readonly httpServer: HttpServer,
-    readonly requestRide: RequestRide,
-    readonly getRide: GetRide,
-  ) {
+  @inject("httpServer")
+  httpServer!: HttpServer
+
+  @inject("requestRide")
+  requestRide!: RequestRide
+
+  @inject("getRide")
+  getRide!: GetRide
+
+  constructor() {
     this.httpServer.register("post", "/ride", async (_, body: any) => {
       return await this.requestRide.execute(body)
     })

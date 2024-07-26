@@ -2,6 +2,7 @@ import Signup from "~/application/usecase/Signup"
 import GetAccount from "~/application/usecase/GetAccount"
 import RequestRide from "~/application/usecase/RequestRide"
 import GetRide from "~/application/usecase/GetRide"
+import Registry from "~/infra/di/Registry"
 import AccountController from "~/infra/controller/AccountController"
 import RideController from "~/infra/controller/RideController"
 import ExpressServerAdapter from "~/infra/http/ExpressServerAdapter"
@@ -26,5 +27,10 @@ const getRide = new GetRide(
   positionRepository,
 )
 
-new AccountController(httpServer, signup, getAccount)
-new RideController(httpServer, requestRide, getRide)
+Registry.getInstance().provide("httpServer", httpServer)
+Registry.getInstance().provide("signup", signup)
+Registry.getInstance().provide("getAccount", getAccount)
+Registry.getInstance().provide("requestRide", requestRide)
+Registry.getInstance().provide("getRide", getRide)
+new AccountController()
+new RideController()
