@@ -1,0 +1,44 @@
+{
+  "name": "clean-code-clean-arch",
+  "version": "1.0.0",
+  "description": "",
+  "main": "src/main.ts",
+  "scripts": {
+    "db:init": "psql -d app -f create.sql",
+    "start:dev": "nodemon --watch 'src/' --exec 'yarn start' -e ts",
+    "start": "ts-node -r tsconfig-paths/register src/main.ts",
+    "test": "jest",
+    "prepare": "husky"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@hapi/hapi": "21.3.7",
+    "@types/express": "^4.17.21",
+    "@types/jest": "^29.5.12",
+    "axios": "^1.7.2",
+    "express": "^4.19.2",
+    "jest": "^29.7.0",
+    "pg-promise": "^11.8.0",
+    "ts-jest": "^29.1.4",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.4.5"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.4.0",
+    "@types/sinon": "^17.0.3",
+    "@types/supertest": "^6.0.2",
+    "eslint": "9.x",
+    "eslint-config-prettier": "^9.1.0",
+    "globals": "^15.4.0",
+    "husky": "^9.0.11",
+    "lint-staged": "^15.2.5",
+    "nodemon": "^3.1.4",
+    "prettier": "^3.3.1",
+    "sinon": "^18.0.0",
+    "supertest": "^7.0.0",
+    "tsconfig-paths": "^4.2.0",
+    "typescript-eslint": "^7.12.0"
+  }
+}

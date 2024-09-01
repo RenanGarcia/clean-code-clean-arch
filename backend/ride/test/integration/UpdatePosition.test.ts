@@ -1,0 +1,100 @@
+import Signup from "~/application/usecase/Signup"
+import GetRide from "~/application/usecase/GetRide"
+import RequestRide from "~/application/usecase/RequestRide"
+import AcceptRide from "~/application/usecase/AcceptRide"
+import StartRide from "~/application/usecase/StartRide"
+import UpdatePosition from "~/application/usecase/UpdatePosition"
+import DatabaseConnection from "~/infra/database/DatabaseConnection"
+import PgPromiseAdapter from "~/infra/database/PgPromiseAdapter"
+import AccountRepository from "~/application/repository/AccountRepository"
+import RideRepository from "~/application/repository/RideRepository"
+import PositionRepository from "~/application/repository/PositionRepository"
+import AccountRepositoryDatabase from "~/infra/repository/AccountRepositoryDatabase"
+import RideRepositoryDatabase from "~/infra/repository/RideRepositoryDatabase"
+import PositionRepositoryDatabase from "~/infra/repository/PositionRepositoryDatabase"
+import AccountRepositoryFake from "~/infra/repository/AccountRepositoryFake"
+import RideRepositoryFake from "~/infra/repository/RideRepositoryFake"
+import PositionRepositoryFake from "~/infra/repository/PositionRepositoryFake"
+
+let signup: Signup
+let requestRide: RequestRide
+let acceptRide: AcceptRide
+let getRide: GetRide
+let startRide: StartRide
+let updatePosition: UpdatePosition
+let connection: DatabaseConnection
+let accountRepository: AccountRepository
+let rideRepository: RideRepository
+let positionRepository: PositionRepository
+
+beforeEach(() => {
+  if (process.env.REPO === "DB") {
+    connection = new PgPromiseAdapter()
+    accountRepository = new AccountRepositoryDatabase(connection)
+    rideRepository = new RideRepositoryDatabase(connection)
+    positionRepository = new PositionRepositoryDatabase(connection)
+  } else {
+    accountRepository = new AccountRepositoryFake()
+    rideRepository = new RideRepositoryFake()
+    positionRepository = new PositionRepositoryFake()
+  }
+
+  signup = new Signup(accountRepository)
+  requestRide = new RequestRide(accountRepository, rideRepository)
+  acceptRide = new AcceptRide(accountRepository, rideRepository)
+  getRide = new GetRide(accountRepository, rideRepository, positionRepository)
+  startRide = new StartRide(rideRepository)
+  updatePosition = new UpdatePosition(rideRepository, positionRepository)
+})
+
+afterEach(() => {
+  if (process.env.REPO === "DB") {
+    connection.close()
+  }
+})
+
+test("Deve atualizar a posição de uma corrida durante o horário noturno", async () => {
+  const userInput = {
+    name: "Renan Garcia",
+    email: `test${Math.random()}@test.com.br`,
+    cpf: "264.500.550-06",
+    isPassenger: true,
+  }
+  const driverInput = {
+    name: "Mike Tyson",
+    email: `test${Math.random()}@test.com.br`,
+    cpf: "385.672.430-33",
+    carPlate: "MVD2030",
+    isDriver: true,
+  }
+  const userSingupOutput = await signup.execute(userInput)
+  const { accountId: driverId } = await signup.execute(driverInput)
+
+  const initialPosition = {
+    lat: -27.584905257808835,
+    long: -48.545022195325124,
+    date: new Date("2023-03-01T23:00:00"),
+  }
+  const finalPosition = {
+    lat: -27.496887588317275,
+    long: -48.522234807851476,
+    date: new Date("2023-03-01T23:10:00"),
+  }
+  const requestRideInput = {
+    passengerId: userSingupOutput.accountId,
+    fromLat: initialPosition.lat,
+    fromLong: initialPosition.long,
+    toLat: finalPosition.lat,
+    toLong: finalPosition.long,
+  }
+  const { rideId } = await requestRide.execute(requestRideInput)
+  await acceptRide.execute({ rideId, driverId })
+  await startRide.execute(rideId)
+  await updatePosition.execute({ rideId, ...initialPosition })
+  await updatePosition.execute({ rideId, ...finalPosition })
+  const getRideOutput = await getRide.execute(rideId)
+  expect(getRideOutput.currentLat).toBe(finalPosition.lat)
+  expect(getRideOutput.currentLong).toBe(finalPosition.long)
+  expect(getRideOutput.distance).toBe(10)
+  expect(getRideOutput.fare).toBe(39)
+})
